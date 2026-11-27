@@ -92,6 +92,9 @@ function WeddingInvitation() {
   const [galleryCategory, setGalleryCategory] = useState<GalleryCategory>("all");
   const [heroSlide, setHeroSlide] = useState(0);
   const [heroParallax, setHeroParallax] = useState(0);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [headerScrolled, setHeaderScrolled] = useState(false);
+  const pageRef = useRef<HTMLElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const touchStartX = useRef<number | null>(null);
   const copy = weddingCopy[language];
@@ -117,14 +120,23 @@ function WeddingInvitation() {
   }, [language]);
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let frame = 0;
+    const updateScroll = () => {
+      const y = window.scrollY;
+      const docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      setHeaderScrolled(y > 32);
+      setScrollProgress(Math.min(1, Math.max(0, y / docHeight)));
+      if (!reduced) {
+        setHeroParallax(Math.min(72, y * 0.16));
+        pageRef.current?.style.setProperty("--scroll-y", String(y));
+      }
+      frame = 0;
+    };
+    updateScroll();
     const onScroll = () => {
       if (frame) return;
-      frame = window.requestAnimationFrame(() => {
-        setHeroParallax(Math.min(72, window.scrollY * 0.16));
-        frame = 0;
-      });
+      frame = window.requestAnimationFrame(updateScroll);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
@@ -132,6 +144,39 @@ function WeddingInvitation() {
       if (frame) window.cancelAnimationFrame(frame);
     };
   }, []);
+
+  useEffect(() => {
+    const root = pageRef.current;
+    if (!root || typeof IntersectionObserver === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const targets = Array.from(root.querySelectorAll<HTMLElement>("[data-reveal]"));
+    if (!targets.length) return;
+
+    root.classList.add("has-scroll-reveal");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-revealed");
+            observer.unobserve(entry.target);
+          }
+        }
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" },
+    );
+
+    for (const el of targets) {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 0.92) {
+        el.classList.add("is-revealed");
+      } else {
+        observer.observe(el);
+      }
+    }
+
+    return () => observer.disconnect();
+  }, [galleryCategory]);
 
   useEffect(() => {
     if (activeGallery === null) return;
@@ -288,7 +333,7 @@ function WeddingInvitation() {
   const activeImage = activeGallery === null ? null : weddingConfig.gallery[activeGallery];
 
   return (
-    <main className="wedding-page">
+    <main className="wedding-page" ref={pageRef}>
       <StageCurtains />
       <DoorPetalShower active={doorShowerActive} />
       {weddingConfig.audioUrl ? (
@@ -308,7 +353,12 @@ function WeddingInvitation() {
         />
       ) : null}
 
-      <header className="site-header">
+      <header className={`site-header${headerScrolled ? " is-scrolled" : ""}`}>
+        <span
+          className="scroll-progress-bar"
+          style={{ transform: `scaleX(${scrollProgress})` }}
+          aria-hidden="true"
+        />
         <a className="wordmark" href="#home" aria-label="Aditya and Anjali home">
           <span className="wordmark-mark">
             {/* Kissing swans forming a heart — classic wedding motif */}
@@ -479,7 +529,7 @@ function WeddingInvitation() {
             fallbackGradient={weddingImages.ganeshBlessingBackdrop.fallbackGradient}
           />
         </div>
-        <div className="invitation section-wrap">
+        <div className="invitation section-wrap" data-reveal="rise">
           <MandalaWatermark className="invitation-mandala" />
           <div className="invitation-mark" aria-hidden="true">
             <span>श्री</span>
@@ -514,25 +564,27 @@ function WeddingInvitation() {
       <section className="couple-section" id="couple">
         <FloatingAtmosphere variant="romantic" />
         <div className="section-wrap">
-          <div className="section-heading">
+          <div className="section-heading" data-reveal="rise">
             <p className="section-kicker">{copy.coupleKicker}</p>
             <h2>{copy.coupleTitle}</h2>
             <p>{copy.coupleDescription}</p>
           </div>
           <div className="couple-grid">
-            <ProfileCard
-              language={language}
-              kind="groom"
-              onPhotoClick={
-                weddingConfig.photographs.groom
-                  ? () => {
-                      const idx = weddingConfig.gallery.findIndex((item) => item.src === weddingConfig.photographs.groom);
-                      if (idx >= 0) setActiveGallery(idx);
-                    }
-                  : undefined
-              }
-            />
-            <div className="couple-join-mark" aria-hidden="true">
+            <div data-reveal="left">
+              <ProfileCard
+                language={language}
+                kind="groom"
+                onPhotoClick={
+                  weddingConfig.photographs.groom
+                    ? () => {
+                        const idx = weddingConfig.gallery.findIndex((item) => item.src === weddingConfig.photographs.groom);
+                        if (idx >= 0) setActiveGallery(idx);
+                      }
+                    : undefined
+                }
+              />
+            </div>
+            <div className="couple-join-mark" aria-hidden="true" data-reveal="scale">
               <span className="join-stem" />
               <span className="join-medallion">
                 <Heart />
@@ -540,30 +592,32 @@ function WeddingInvitation() {
               <span>03 · XII · 26</span>
               <span className="join-stem" />
             </div>
-            <ProfileCard
-              language={language}
-              kind="bride"
-              onPhotoClick={
-                weddingConfig.photographs.bride
-                  ? () => {
-                      const idx = weddingConfig.gallery.findIndex((item) => item.src === weddingConfig.photographs.bride);
-                      if (idx >= 0) setActiveGallery(idx);
-                    }
-                  : undefined
-              }
-            />
+            <div data-reveal="right">
+              <ProfileCard
+                language={language}
+                kind="bride"
+                onPhotoClick={
+                  weddingConfig.photographs.bride
+                    ? () => {
+                        const idx = weddingConfig.gallery.findIndex((item) => item.src === weddingConfig.photographs.bride);
+                        if (idx >= 0) setActiveGallery(idx);
+                      }
+                    : undefined
+                }
+              />
+            </div>
           </div>
           <FloralDivider />
         </div>
       </section>
 
       <section className="family-section section-wrap" id="family">
-        <div className="section-heading">
+        <div className="section-heading" data-reveal="rise">
           <p className="section-kicker">{copy.familyKicker}</p>
           <h2>{copy.familyTitle}</h2>
         </div>
         <div className="family-lead-grid">
-          <div className="family-panel family-panel--groom">
+          <div className="family-panel family-panel--groom" data-reveal="left">
             <MandalaWatermark className="family-panel-mandala" />
             <span className="family-icon">
               <Flower2 aria-hidden="true" />
@@ -572,7 +626,7 @@ function WeddingInvitation() {
             <p>{weddingConfig.groom.father}</p>
             <p>{weddingConfig.groom.mother}</p>
           </div>
-          <div className="family-panel family-panel--bride">
+          <div className="family-panel family-panel--bride" data-reveal="right">
             <MandalaWatermark className="family-panel-mandala" />
             <span className="family-icon">
               <Flower2 aria-hidden="true" />
@@ -582,7 +636,7 @@ function WeddingInvitation() {
             <p>{weddingConfig.bride.mother}</p>
           </div>
         </div>
-        <div className="family-note-grid">
+        <div className="family-note-grid" data-reveal="rise">
           <FamilyList title={copy.wellWishers} names={[...weddingConfig.family.wellWishers]} />
           <FamilyList
             title={copy.darshanabhilashi}
@@ -607,7 +661,12 @@ function WeddingInvitation() {
               const eventImage = weddingImages.events[eventData.key];
               const isShared = copiedNumber === `event-${eventData.key}`;
               return (
-                <article className="event-row" key={eventData.key}>
+                <article
+                  className="event-row"
+                  key={eventData.key}
+                  data-reveal="rise"
+                  style={{ "--reveal-delay": `${index * 90}ms` } as React.CSSProperties}
+                >
                   <div className="event-marker">
                     <span>{String(index + 1).padStart(2, "0")}</span>
                   </div>
@@ -670,7 +729,7 @@ function WeddingInvitation() {
       </section>
 
       <section className="barat-section section-wrap">
-        <div className="barat-visual">
+        <div className="barat-visual" data-reveal="left">
           <div className="barat-photo-frame">
             <WeddingImage
               src={weddingImages.baratConvoy.src}
@@ -703,7 +762,7 @@ function WeddingInvitation() {
             </a>
           </div>
         </div>
-        <div className="barat-copy">
+        <div className="barat-copy" data-reveal="right">
           <p className="section-kicker">{copy.travelKicker}</p>
           <h2>{copy.baratTitle}</h2>
           <blockquote>{weddingConfig.departure.originalMessage}</blockquote>
@@ -715,7 +774,7 @@ function WeddingInvitation() {
       </section>
 
       <section className="venue-section section-wrap" id="venue">
-        <div className="venue-map-art">
+        <div className="venue-map-art" data-reveal="left">
           <WeddingImage
             src={weddingImages.venueBackdrop.src}
             alt={
@@ -729,7 +788,7 @@ function WeddingInvitation() {
             <MapPin />
           </div>
         </div>
-        <div className="venue-copy">
+        <div className="venue-copy" data-reveal="right">
           <p className="section-kicker">{copy.venueKicker}</p>
           <h2>{copy.venueTitle}</h2>
           {weddingConfig.venue.name ? (
@@ -805,6 +864,8 @@ function WeddingInvitation() {
                 className={`gallery-tile gallery-tile--${item.art}${hasPhoto ? " gallery-tile--has-photo" : ""}${item.key === "couple-portrait" ? " gallery-tile--featured" : ""}`}
                 type="button"
                 key={item.key}
+                data-reveal="rise"
+                style={{ "--reveal-delay": `${(index % 4) * 70}ms` } as React.CSSProperties}
                 onClick={() => setActiveGallery(index)}
                 aria-label={`${copy.openImage}: ${title}`}
               >
@@ -835,7 +896,7 @@ function WeddingInvitation() {
       </section>
 
       <section className="contact-section" id="contact">
-        <div className="section-wrap contact-layout">
+        <div className="section-wrap contact-layout" data-reveal="rise">
           <div className="contact-copy">
             <p className="section-kicker">{copy.contactKicker}</p>
             <h2>{copy.contactTitle}</h2>
@@ -904,7 +965,7 @@ function WeddingInvitation() {
       </section>
 
       <section className="final-blessing-section" aria-label={copy.finalBlessing}>
-        <div className="section-wrap final-blessing-inner">
+        <div className="section-wrap final-blessing-inner" data-reveal="scale">
           <MandalaWatermark className="final-mandala" />
           <p className="final-blessing-quote">“{copy.finalBlessing}”</p>
           <p className="final-with-love">{copy.withLove}</p>
@@ -1002,6 +1063,10 @@ function WeddingInvitation() {
 
               <div className="intro-lintel-wrap" aria-hidden="true">
                 <span className="intro-lintel-mantra">॥ श्री गणेशाय नमः ॥</span>
+              </div>
+
+              <div className="intro-welcome-wrap" aria-hidden="true">
+                <p className="intro-welcome-text">{copy.doorWelcomeMessage}</p>
               </div>
 
               <div className="intro-tap-hint-wrap" aria-hidden="true">

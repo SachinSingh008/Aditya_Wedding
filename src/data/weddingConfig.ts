@@ -266,6 +266,8 @@ export const weddingCopy = {
     photoPending: "तस्वीर शीघ्र उपलब्ध होगी",
     viewPhoto: "तस्वीर देखें",
     tapDoorsHint: "निमंत्रण खोलने के लिए द्वार स्पर्श करें",
+    doorWelcomeMessage:
+      "आदित्य एवं अंजली के शुभ विवाह में आपका हार्दिक स्वागत है।\nसपरिवार पधारकर हमें अनुगृहीत करें।",
     openImage: "चित्र खोलें",
     close: "बंद करें",
     previousImage: "पिछला चित्र",
@@ -365,6 +367,8 @@ export const weddingCopy = {
     photoPending: "Photograph coming soon",
     viewPhoto: "View photo",
     tapDoorsHint: "Tap temple doors to open invitation",
+    doorWelcomeMessage:
+      "Warmly welcoming you to the wedding of Aditya & Anjali.\nPlease grace the occasion with your presence and blessings.",
     openImage: "Open photograph",
     close: "Close",
     previousImage: "Previous photograph",

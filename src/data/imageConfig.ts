@@ -46,8 +46,8 @@ export const weddingImages = {
   baratConvoy: {
     src: "/images/barat-convoy.jpg",
     fallbackGradient: "linear-gradient(135deg, #3B1020 0%, #65152D 50%, #C49A43 100%)",
-    altHi: "ताजे फूलों से सजी बारात प्रस्थान की गाड़ी",
-    altEn: "Wedding car adorned with fresh marigolds and roses for the Baraat departure",
+    altHi: "दो श्वेत अश्वों, गेंदा-गुलाब और शाही मखमली चंदोवे से सजा भव्य स्वर्ण बारात रथ",
+    altEn: "Ornate golden Baraat chariot drawn by two white horses adorned with marigolds, crimson roses, and warm lanterns",
   },
   venueBackdrop: {
     src: "/images/event-vivah.jpg",
