@@ -13,6 +13,24 @@ export interface ImageAsset {
  * Couple portrait photographs remain null in `weddingConfig.photographs` until real photos are provided.
  */
 export const weddingImages = {
+  templeFrame: {
+    src: "/images/temple-frame.webp",
+    fallbackGradient: "radial-gradient(ellipse at 50% 45%, #2a1e15 0%, #120b07 100%)",
+    altHi: "पुष्प तोरण, पीतल के घंटे, दीपों और रंगोली से सजा पारम्परिक मंदिर प्रवेश द्वार",
+    altEn: "Traditional carved temple doorway framed with jasmine garlands, brass bells, oil lamps, and rangoli",
+  },
+  templeDoorLeft: {
+    src: "/images/temple-door-left.webp",
+    fallbackGradient: "linear-gradient(175deg, #3d2206 0%, #5a3410 50%, #3d2206 100%)",
+    altHi: "नक्काशीदार सागौन लकड़ी का बायाँ मंदिर कपाट",
+    altEn: "Left carved antique teak temple door leaf with brass lion-head knocker",
+  },
+  templeDoorRight: {
+    src: "/images/temple-door-right.webp",
+    fallbackGradient: "linear-gradient(175deg, #3d2206 0%, #5a3410 50%, #3d2206 100%)",
+    altHi: "नक्काशीदार सागौन लकड़ी का दायाँ मंदिर कपाट",
+    altEn: "Right carved antique teak temple door leaf with brass lion-head knocker",
+  },
   heroBackground: {
     src: "/images/hero-mandap.jpg",
     fallbackGradient: "radial-gradient(ellipse at 50% 42%, #65152D 0%, #3B1020 68%, #220711 100%)",
@@ -64,3 +82,21 @@ export const weddingImages = {
     },
   } satisfies Record<EventKey, ImageAsset>,
 } as const;
+
+export const heroSlideshowImages: readonly ImageAsset[] = [
+  weddingImages.heroBackground,
+  {
+    src: "/images/hero-slide-2.jpg",
+    fallbackGradient:
+      "radial-gradient(ellipse at 50% 42%, #65152D 0%, #3B1020 68%, #220711 100%)",
+    altHi: "गोधूलि बेला में गेंदा, गुलाब और झूमरों से सजा भव्य राजसी विवाह मंडप आंगन",
+    altEn: "Grand royal Indian wedding mandap courtyard at twilight with cascading marigolds, roses, and crystal chandeliers",
+  },
+  {
+    src: "/images/hero-slide-3.jpg",
+    fallbackGradient:
+      "radial-gradient(ellipse at 50% 42%, #65152D 0%, #3B1020 68%, #220711 100%)",
+    altHi: "गेंदा, गुलाब, पीतल की घंटियों और प्रज्वलित दीपों से सजा भव्य विवाह तोरण द्वार",
+    altEn: "Ornate Indian wedding floral archway adorned with marigolds, crimson roses, brass bells, and glowing diyas",
+  },
+];

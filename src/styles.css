@@ -77,12 +77,14 @@
 
 @layer base {
   * { border-color: var(--color-border); }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; font-size: 18px; }
   body {
     margin: 0;
     background: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.65;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
   }
@@ -103,12 +105,12 @@
 }
 
 .section-wrap { width: min(1160px, calc(100% - 64px)); margin-inline: auto; }
-.section-kicker { margin: 0 0 14px; color: var(--royal-maroon); font-size: 0.74rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; }
-.section-heading { max-width: 680px; margin: 0 auto 48px; text-align: center; }
+.section-kicker { margin: 0 0 14px; color: var(--royal-maroon); font-size: 0.88rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+.section-heading { max-width: 720px; margin: 0 auto 48px; text-align: center; }
 .section-heading h2, .invitation h2, .barat-copy h2, .venue-copy h2, .contact-copy h2 {
-  margin: 0; font-family: var(--font-display-family); font-size: clamp(2.2rem, 4.4vw, 3.6rem); font-weight: 500; line-height: 1.12;
+  margin: 0; font-family: var(--font-display-family); font-size: clamp(2.4rem, 4.6vw, 3.85rem); font-weight: 500; line-height: 1.15;
 }
-.section-heading > p:last-child { margin: 16px auto 0; max-width: 540px; color: var(--muted-foreground); line-height: 1.85; }
+.section-heading > p:last-child { margin: 16px auto 0; max-width: 580px; color: var(--muted-foreground); font-size: 1.05rem; line-height: 1.85; }
 
 /* Reusable image & ornament helpers */
 .wedding-image-wrap { position: relative; width: 100%; height: 100%; overflow: hidden; }
@@ -140,18 +142,97 @@
 }
 .wordmark { display: inline-flex; align-items: center; gap: 10px; color: var(--royal-maroon); font-family: var(--font-display-family); font-size: 1.38rem; text-decoration: none; white-space: nowrap; }
 .wordmark i { color: var(--antique-gold); font-size: 1.15rem; font-style: normal; }
-.wordmark-mark { display: grid; place-items: center; width: 33px; height: 33px; border: 1px solid var(--antique-gold); border-radius: 50%; color: var(--antique-gold); }
-.wordmark-mark svg { width: 18px; height: 18px; }
+.wordmark-mark {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+  /* Layered background: radial glow + diagonal gold gradient */
+  background:
+    radial-gradient(circle at 38% 35%, color-mix(in oklab, var(--champagne) 90%, var(--antique-gold)) 0%, transparent 65%),
+    linear-gradient(135deg, #e8c96a 0%, #c49a43 35%, #8b6914 60%, #c49a43 80%, #e8c96a 100%);
+  /* Multi-ring border: thin bright gold + outer glow */
+  box-shadow:
+    0 0 0 1.5px color-mix(in oklab, var(--antique-gold) 55%, transparent),
+    0 0 0 3px color-mix(in oklab, var(--antique-gold) 20%, transparent),
+    0 3px 12px color-mix(in oklab, var(--antique-gold) 40%, transparent),
+    inset 0 1px 2px color-mix(in oklab, #fff 30%, transparent);
+  color: var(--ivory);
+  /* Shimmer sweep animation */
+  overflow: hidden;
+  transition: box-shadow 300ms ease, transform 300ms ease;
+}
+.wordmark-mark::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    color-mix(in oklab, #fff 55%, transparent) 50%,
+    transparent 70%
+  );
+  background-size: 200% 100%;
+  background-position: -100% 0;
+  animation: wordmark-shimmer 3s ease-in-out infinite;
+}
+@keyframes wordmark-shimmer {
+  0%   { background-position: -100% 0; opacity: 0; }
+  20%  { opacity: 1; }
+  60%  { background-position: 180% 0; opacity: 1; }
+  100% { background-position: 180% 0; opacity: 0; }
+}
+.wordmark:hover .wordmark-mark {
+  transform: scale(1.1) rotate(12deg);
+  box-shadow:
+    0 0 0 1.5px var(--antique-gold),
+    0 0 0 4px color-mix(in oklab, var(--antique-gold) 25%, transparent),
+    0 4px 20px color-mix(in oklab, var(--antique-gold) 55%, transparent),
+    inset 0 1px 2px color-mix(in oklab, #fff 40%, transparent);
+}
+.wordmark-mark svg {
+  position: relative;
+  z-index: 1;
+  width: 22px;
+  height: 22px;
+  filter: drop-shadow(0 1px 2px rgba(59, 16, 32, 0.35));
+}
 .desktop-nav { display: flex; align-items: center; gap: clamp(20px, 3vw, 44px); }
-.desktop-nav a { color: var(--ink); font-size: 0.82rem; font-weight: 500; text-decoration: none; transition: color 180ms ease; }
+.desktop-nav a { color: var(--ink); font-size: 0.96rem; font-weight: 500; text-decoration: none; transition: color 180ms ease; }
 .desktop-nav a:hover { color: var(--royal-maroon); }
 .header-actions { display: flex; align-items: center; gap: 12px; }
 .language-switch { display: flex; align-items: center; gap: 2px; color: var(--antique-gold); }
-.language-switch button { color: var(--muted-foreground); font-size: 0.75rem; padding-inline: 8px; }
+.language-switch button { color: var(--muted-foreground); font-size: 0.88rem; padding-inline: 8px; }
 .language-switch button[aria-pressed="true"] { color: var(--royal-maroon); font-weight: 700; }
 .music-button { border-color: color-mix(in oklab, var(--antique-gold) 64%, var(--border)); color: var(--royal-maroon); }
 .music-button.is-playing { background: color-mix(in oklab, var(--champagne) 70%, var(--ivory)); border-color: var(--antique-gold); }
 .music-notice { position: fixed; z-index: 30; top: 84px; right: 24px; max-width: 270px; margin: 0; padding: 12px 16px; border: 1px solid var(--border); background: var(--ivory); box-shadow: var(--shadow-soft); color: var(--ink); font-size: 0.82rem; }
+
+/* Marigold & rose toran garland hung directly below the sticky navbar */
+.top-garland {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 64px;
+  pointer-events: none;
+  overflow: hidden;
+  filter: drop-shadow(0 5px 10px color-mix(in oklab, var(--deep-burgundy) 28%, transparent));
+}
+.top-garland-svg {
+  display: block;
+  transform-origin: top center;
+  animation: garland-sway 6.5s ease-in-out infinite;
+}
+@keyframes garland-sway {
+  0%, 100% { transform: translateY(0) scaleY(1) skewX(0deg); }
+  35% { transform: translateY(1px) scaleY(1.03) skewX(0.35deg); }
+  70% { transform: translateY(0.5px) scaleY(0.99) skewX(-0.3deg); }
+}
 
 /* Hero Section */
 .hero {
@@ -159,12 +240,25 @@
   background: var(--deep-burgundy);
   text-align: center; color: var(--ivory);
 }
-.hero-media { position: absolute; inset: -40px 0; z-index: 0; will-change: transform; }
+.hero-media { position: absolute; inset: -40px 0; z-index: 0; overflow: hidden; will-change: transform; background: radial-gradient(ellipse at 50% 42%, #65152D 0%, #3B1020 68%, #220711 100%); }
+.hero-slideshow { position: absolute; inset: 0; }
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: scale(1.02);
+  transition: opacity 1600ms ease-in-out, transform 6500ms ease-out;
+  will-change: opacity, transform;
+}
+.hero-slide.is-active {
+  opacity: 1;
+  transform: scale(1.1);
+}
 .hero-scrim {
-  position: absolute; inset: 0;
+  position: absolute; inset: 0; z-index: 1;
   background:
-    radial-gradient(ellipse at 50% 45%, color-mix(in oklab, var(--royal-maroon) 52%, transparent) 0%, color-mix(in oklab, var(--deep-burgundy) 88%, black) 82%),
-    linear-gradient(180deg, rgba(35, 7, 16, 0.55) 0%, rgba(59, 16, 32, 0.42) 50%, rgba(35, 7, 16, 0.84) 100%);
+    radial-gradient(ellipse at 50% 45%, color-mix(in oklab, var(--royal-maroon) 36%, transparent) 0%, color-mix(in oklab, var(--deep-burgundy) 82%, black) 84%),
+    linear-gradient(180deg, rgba(35, 7, 16, 0.44) 0%, rgba(59, 16, 32, 0.30) 50%, rgba(35, 7, 16, 0.78) 100%);
 }
 .hero-frame {
   position: absolute; inset: 22px; z-index: 2; pointer-events: none;
@@ -176,29 +270,28 @@
 .hero-inner { position: relative; z-index: 3; width: min(880px, calc(100% - 36px)); padding: 72px 0 96px; }
 .hero-eyebrow {
   margin-bottom: 20px; color: var(--champagne); font-family: var(--font-hindi-family);
-  font-size: 1.12rem; font-weight: 500; letter-spacing: 0.1em;
+  font-size: 1.28rem; font-weight: 500; letter-spacing: 0.1em;
   animation: reveal-soft 900ms 120ms ease both;
 }
 .hero-rule { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; margin: 0 auto 24px; color: var(--antique-gold); animation: reveal-soft 900ms 240ms ease both; }
 .hero-rule::before, .hero-rule::after { width: 72px; height: 1px; background: linear-gradient(90deg, transparent, var(--antique-gold), transparent); content: ""; }
 .hero-rule span { width: 8px; height: 8px; transform: rotate(45deg); border: 1px solid var(--antique-gold); }
-.hero h1 { display: flex; flex-direction: column; align-items: center; gap: 6px; margin: 0; color: var(--ivory); font-family: var(--font-display-family); font-size: clamp(2.85rem, 7.6vw, 6.1rem); font-weight: 500; line-height: 0.98; letter-spacing: 0.06em; text-shadow: 0 8px 32px rgba(0, 0, 0, 0.42); }
+.hero h1 { display: flex; flex-direction: column; align-items: center; gap: 6px; margin: 0; color: var(--ivory); font-family: var(--font-display-family); font-size: clamp(3.1rem, 8vw, 6.4rem); font-weight: 500; line-height: 0.98; letter-spacing: 0.06em; text-shadow: 0 8px 32px rgba(0, 0, 0, 0.42); }
 .hero-name-groom { animation: reveal-soft 1000ms 320ms ease both; }
 .hero-name-bride { animation: reveal-soft 1000ms 520ms ease both; }
-.hero-heart { width: 26px; height: 26px; margin: 8px 0; color: var(--soft-rose); fill: color-mix(in oklab, var(--royal-maroon) 55%, var(--soft-rose)); animation: pulse-heart 2.8s ease-in-out infinite; filter: drop-shadow(0 0 10px rgba(233, 201, 197, 0.45)); }
-.hero-deck { max-width: 540px; margin: 24px auto 18px; color: var(--champagne); font-family: var(--font-hindi-family); font-size: 1.08rem; line-height: 1.85; animation: reveal-soft 900ms 650ms ease both; }
-.hero-date { margin: 0; color: var(--antique-gold); font-size: 0.84rem; font-weight: 700; letter-spacing: 0.16em; animation: reveal-soft 900ms 750ms ease both; }
-.hero-location { display: flex; align-items: center; justify-content: center; gap: 7px; margin: 10px 0 0; color: color-mix(in oklab, var(--ivory) 82%, transparent); font-size: 0.82rem; animation: reveal-soft 900ms 820ms ease both; }
+.hero-heart { width: 28px; height: 28px; margin: 8px 0; color: var(--soft-rose); fill: color-mix(in oklab, var(--royal-maroon) 55%, var(--soft-rose)); animation: pulse-heart 2.8s ease-in-out infinite; filter: drop-shadow(0 0 10px rgba(233, 201, 197, 0.45)); }
+.hero-deck { max-width: 580px; margin: 24px auto 18px; color: var(--champagne); font-family: var(--font-hindi-family); font-size: 1.22rem; line-height: 1.85; animation: reveal-soft 900ms 650ms ease both; }
+.hero-date { margin: 0; color: var(--antique-gold); font-size: 1rem; font-weight: 700; letter-spacing: 0.14em; animation: reveal-soft 900ms 750ms ease both; }
 .countdown { display: flex; justify-content: center; gap: clamp(10px, 2.4vw, 22px); margin: 34px auto 0; animation: reveal-soft 950ms 900ms ease both; }
 .countdown-unit {
-  display: grid; gap: 6px; min-width: 82px; padding: 14px 12px;
+  display: grid; gap: 6px; min-width: 90px; padding: 14px 12px;
   border: 1px solid color-mix(in oklab, var(--antique-gold) 52%, transparent);
   background: color-mix(in oklab, var(--deep-burgundy) 68%, transparent);
   backdrop-filter: blur(8px);
 }
-.countdown-number { color: var(--champagne); font-family: var(--font-display-family); font-size: 2.15rem; font-variant-numeric: tabular-nums; line-height: 1; }
-.countdown-label { color: var(--antique-gold); font-size: 0.62rem; font-weight: 600; letter-spacing: 0.13em; }
-.scroll-cue { position: absolute; bottom: 26px; left: 50%; z-index: 3; display: grid; justify-items: center; gap: 6px; transform: translateX(-50%); color: var(--champagne); font-size: 0.72rem; letter-spacing: 0.08em; text-decoration: none; }
+.countdown-number { color: var(--champagne); font-family: var(--font-display-family); font-size: 2.35rem; font-variant-numeric: tabular-nums; line-height: 1; }
+.countdown-label { color: var(--antique-gold); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.12em; }
+.scroll-cue { position: absolute; bottom: 26px; left: 50%; z-index: 3; display: grid; justify-items: center; gap: 6px; transform: translateX(-50%); color: var(--champagne); font-size: 0.88rem; letter-spacing: 0.08em; text-decoration: none; }
 .scroll-cue svg { animation: float-down 1.6s ease-in-out infinite; }
 .hero-side-note { position: absolute; right: max(36px, calc((100vw - 1160px) / 2)); bottom: 110px; z-index: 3; color: color-mix(in oklab, var(--antique-gold) 72%, transparent); font-family: var(--font-display-family); font-size: 1.15rem; letter-spacing: 0.14em; writing-mode: vertical-rl; }
 .hero-ornament { position: absolute; top: 50%; z-index: 2; width: min(20vw, 210px); aspect-ratio: 1; color: color-mix(in oklab, var(--antique-gold) 28%, transparent); pointer-events: none; }
@@ -215,13 +308,13 @@
 .invitation::after { right: 0; }
 .invitation-mark { position: relative; z-index: 1; display: grid; place-items: center; width: 72px; height: 72px; margin: 0 auto 24px; border: 1px solid var(--antique-gold); border-radius: 50%; outline: 1px solid color-mix(in oklab, var(--antique-gold) 45%, transparent); outline-offset: 5px; background: var(--ivory); color: var(--royal-maroon); font-family: var(--font-hindi-family); font-size: 1.5rem; box-shadow: var(--shadow-gold); }
 .invitation h2 { position: relative; z-index: 1; margin-bottom: 28px; color: var(--royal-maroon); font-family: var(--font-hindi-family); font-size: clamp(2rem, 4.2vw, 3rem); }
-.invitation-salutation, .invitation-lead { position: relative; z-index: 1; margin: 0 0 14px; font-family: var(--font-hindi-family); font-size: 1.04rem; line-height: 1.9; }
-.invitation-emphasis { position: relative; z-index: 1; margin: 0 auto; color: var(--royal-maroon); font-family: var(--font-hindi-family); font-size: 1.18rem; line-height: 2; white-space: pre-line; }
-.poetry-block { position: relative; z-index: 1; margin: 28px auto; color: var(--deep-burgundy); font-family: var(--font-hindi-family); font-size: 1.04rem; line-height: 2; }
-.prayer-block { position: relative; z-index: 1; display: grid; gap: 6px; width: fit-content; max-width: 100%; margin: 0 auto 30px; padding: 20px 30px; border-block: 1px solid color-mix(in oklab, var(--antique-gold) 52%, transparent); background: color-mix(in oklab, var(--ivory) 78%, transparent); color: var(--muted-foreground); font-family: var(--font-hindi-family); font-size: 0.94rem; line-height: 1.9; }
+.invitation-salutation, .invitation-lead { position: relative; z-index: 1; margin: 0 0 14px; font-family: var(--font-hindi-family); font-size: 1.15rem; line-height: 1.9; }
+.invitation-emphasis { position: relative; z-index: 1; margin: 0 auto; color: var(--royal-maroon); font-family: var(--font-hindi-family); font-size: 1.3rem; line-height: 2; white-space: pre-line; }
+.poetry-block { position: relative; z-index: 1; margin: 28px auto; color: var(--deep-burgundy); font-family: var(--font-hindi-family); font-size: 1.15rem; line-height: 2; }
+.prayer-block { position: relative; z-index: 1; display: grid; gap: 6px; width: fit-content; max-width: 100%; margin: 0 auto 30px; padding: 20px 30px; border-block: 1px solid color-mix(in oklab, var(--antique-gold) 52%, transparent); background: color-mix(in oklab, var(--ivory) 78%, transparent); color: var(--muted-foreground); font-family: var(--font-hindi-family); font-size: 1.04rem; line-height: 1.9; }
 .prayer-block p { margin: 0; }
-.prayer-block .prayer-heading { margin-bottom: 6px; color: var(--royal-maroon); font-size: 1.04rem; font-weight: 600; }
-.welcome-copy { position: relative; z-index: 1; max-width: 580px; margin: 0 auto; color: var(--muted-foreground); font-family: var(--font-hindi-family); font-size: 0.96rem; line-height: 2; }
+.prayer-block .prayer-heading { margin-bottom: 6px; color: var(--royal-maroon); font-size: 1.15rem; font-weight: 600; }
+.welcome-copy { position: relative; z-index: 1; max-width: 620px; margin: 0 auto; color: var(--muted-foreground); font-family: var(--font-hindi-family); font-size: 1.08rem; line-height: 2; }
 
 /* Love Story / A Beautiful Beginning */
 .couple-section { position: relative; padding-block: 100px 112px; border-top: 1px solid color-mix(in oklab, var(--antique-gold) 31%, transparent); background: var(--ivory); }
@@ -244,15 +337,15 @@
 .portrait-ornament { position: relative; z-index: 1; display: grid; place-items: center; width: 108px; height: 108px; border: 1px solid var(--antique-gold); border-radius: 50%; background: color-mix(in oklab, var(--ivory) 82%, transparent); color: var(--royal-maroon); box-shadow: var(--shadow-gold); }
 .portrait-ornament svg { position: absolute; width: 84px; height: 84px; stroke-width: 0.65; opacity: 0.55; }
 .portrait-ornament span { font-family: var(--font-hindi-family); font-size: 2.1rem; }
-.portrait-status { position: absolute; bottom: 18px; z-index: 1; padding: 4px 10px; border: 1px solid color-mix(in oklab, var(--antique-gold) 38%, transparent); background: color-mix(in oklab, var(--ivory) 88%, transparent); color: var(--muted-foreground); font-size: 0.62rem; }
+.portrait-status { position: absolute; bottom: 18px; z-index: 1; padding: 5px 12px; border: 1px solid color-mix(in oklab, var(--antique-gold) 38%, transparent); background: color-mix(in oklab, var(--ivory) 92%, transparent); color: var(--muted-foreground); font-size: 0.8rem; }
 .profile-details { align-self: center; padding: 28px 26px; }
-.profile-role { margin: 0 0 10px; color: var(--antique-gold); font-size: 0.66rem; font-weight: 700; letter-spacing: 0.16em; }
-.profile-details h3 { margin: 0; color: var(--royal-maroon); font-family: var(--font-hindi-family); font-size: 1.38rem; font-weight: 600; line-height: 1.5; }
-.profile-name-en { margin: 5px 0 0; font-family: var(--font-display-family); font-size: 1.32rem; }
-.profile-note { margin: 10px 0 20px; color: var(--muted-foreground); font-size: 0.78rem; }
-.profile-family { display: grid; grid-template-columns: 48px 1fr; gap: 7px 10px; padding-top: 14px; border-top: 1px solid color-mix(in oklab, var(--antique-gold) 38%, transparent); font-size: 0.72rem; }
+.profile-role { margin: 0 0 10px; color: var(--antique-gold); font-size: 0.82rem; font-weight: 700; letter-spacing: 0.14em; }
+.profile-details h3 { margin: 0; color: var(--royal-maroon); font-family: var(--font-hindi-family); font-size: 1.52rem; font-weight: 600; line-height: 1.5; }
+.profile-name-en { margin: 5px 0 0; font-family: var(--font-display-family); font-size: 1.44rem; }
+.profile-note { margin: 10px 0 20px; color: var(--muted-foreground); font-size: 0.92rem; }
+.profile-family { display: grid; grid-template-columns: 56px 1fr; gap: 8px 12px; padding-top: 14px; border-top: 1px solid color-mix(in oklab, var(--antique-gold) 38%, transparent); font-size: 0.86rem; }
 .profile-family span { color: var(--muted-foreground); }
-.profile-family strong { font-family: var(--font-hindi-family); font-size: 0.8rem; font-weight: 500; }
+.profile-family strong { font-family: var(--font-hindi-family); font-size: 0.94rem; font-weight: 500; }
 .couple-join-mark { display: grid; justify-items: center; gap: 10px; color: var(--antique-gold); }
 .join-stem { width: 1px; height: 34px; background: linear-gradient(transparent, var(--antique-gold), transparent); }
 .join-medallion { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--antique-gold); border-radius: 50%; background: color-mix(in oklab, var(--soft-rose) 35%, var(--ivory)); }
@@ -271,12 +364,12 @@
 .family-panel-mandala { position: absolute; right: -45px; bottom: -45px; width: 150px; height: 150px; color: color-mix(in oklab, var(--antique-gold) 22%, transparent); pointer-events: none; }
 .family-icon { position: relative; z-index: 1; display: grid; place-items: center; width: 40px; height: 40px; margin: 0 auto 17px; border: 1px solid var(--antique-gold); border-radius: 50%; background: var(--ivory); color: var(--royal-maroon); }
 .family-icon svg { width: 18px; height: 18px; }
-.family-label { position: relative; z-index: 1; margin: 0 0 13px; color: var(--royal-maroon); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
-.family-panel > p:not(.family-label) { position: relative; z-index: 1; margin: 6px 0; font-family: var(--font-hindi-family); font-size: 1.05rem; font-weight: 500; }
+.family-label { position: relative; z-index: 1; margin: 0 0 13px; color: var(--royal-maroon); font-size: 0.86rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+.family-panel > p:not(.family-label) { position: relative; z-index: 1; margin: 6px 0; font-family: var(--font-hindi-family); font-size: 1.18rem; font-weight: 500; }
 .family-note-grid { display: grid; grid-template-columns: 1fr 1.25fr 1fr; gap: 27px; margin-top: 38px; }
 .family-list { padding: 22px 20px; border-top: 2px solid color-mix(in oklab, var(--antique-gold) 58%, transparent); background: color-mix(in oklab, var(--champagne) 36%, var(--ivory)); }
-.family-list h3 { margin: 0 0 11px; color: var(--royal-maroon); font-family: var(--font-hindi-family); font-size: 1.02rem; font-weight: 600; }
-.family-list p { margin: 0; color: var(--muted-foreground); font-family: var(--font-hindi-family); font-size: 0.89rem; line-height: 2; }
+.family-list h3 { margin: 0 0 11px; color: var(--royal-maroon); font-family: var(--font-hindi-family); font-size: 1.15rem; font-weight: 600; }
+.family-list p { margin: 0; color: var(--muted-foreground); font-family: var(--font-hindi-family); font-size: 1.02rem; line-height: 2; }
 
 /* Events Timeline */
 .events-section { padding-block: 108px 114px; background: radial-gradient(circle at 50% 0%, #521327 0%, var(--deep-burgundy) 65%); color: var(--ivory); }
@@ -297,14 +390,14 @@
 .event-visual { position: relative; overflow: hidden; border-bottom: 1px solid color-mix(in oklab, var(--antique-gold) 40%, transparent); }
 .event-card:hover .wedding-image-img { transform: scale(1.06); }
 .event-copy { display: flex; flex-direction: column; padding: 24px 26px 26px; }
-.event-date { margin: 0 0 8px; color: var(--antique-gold); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; }
+.event-date { margin: 0 0 8px; color: var(--antique-gold); font-size: 0.86rem; font-weight: 600; letter-spacing: 0.08em; }
 .event-date span { padding-inline: 5px; }
-.event-copy h3 { margin: 0; color: var(--ivory); font-family: var(--font-hindi-family); font-size: 1.48rem; font-weight: 500; }
-.event-subtitle-alt { margin: 3px 0 0; color: color-mix(in oklab, var(--champagne) 72%, transparent); font-family: var(--font-display-family); font-size: 0.96rem; }
-.event-time { margin: 10px 0 0; color: var(--champagne); font-size: 0.8rem; font-weight: 500; }
-.event-description { margin: 12px 0 20px; color: color-mix(in oklab, var(--ivory) 80%, transparent); font-size: 0.84rem; line-height: 1.75; flex: 1; }
+.event-copy h3 { margin: 0; color: var(--ivory); font-family: var(--font-hindi-family); font-size: 1.62rem; font-weight: 500; }
+.event-subtitle-alt { margin: 3px 0 0; color: color-mix(in oklab, var(--champagne) 82%, transparent); font-family: var(--font-display-family); font-size: 1.1rem; }
+.event-time { margin: 10px 0 0; color: var(--champagne); font-size: 0.94rem; font-weight: 500; }
+.event-description { margin: 12px 0 20px; color: color-mix(in oklab, var(--ivory) 86%, transparent); font-size: 0.98rem; line-height: 1.75; flex: 1; }
 .event-actions { display: flex; flex-wrap: wrap; gap: 8px; }
-.event-actions button { background: color-mix(in oklab, var(--deep-burgundy) 55%, transparent); border-color: color-mix(in oklab, var(--antique-gold) 58%, transparent); color: var(--ivory); font-size: 0.74rem; }
+.event-actions button { background: color-mix(in oklab, var(--deep-burgundy) 55%, transparent); border-color: color-mix(in oklab, var(--antique-gold) 58%, transparent); color: var(--ivory); font-size: 0.86rem; }
 .event-actions button:hover { background: color-mix(in oklab, var(--antique-gold) 22%, transparent); color: var(--ivory); }
 
 /* Barat Departure */
@@ -313,15 +406,15 @@
 .barat-photo-frame { height: 280px; border: 1px solid color-mix(in oklab, var(--antique-gold) 56%, transparent); border-radius: 140px 140px 0 0; overflow: hidden; box-shadow: var(--shadow-soft); }
 .barat-photo-frame:hover .wedding-image-img { transform: scale(1.04); }
 .barat-copy h2 { margin-bottom: 22px; color: var(--royal-maroon); font-family: var(--font-hindi-family); font-size: clamp(2.1rem, 3.8vw, 2.8rem); }
-.barat-copy blockquote { max-width: 560px; margin: 0; padding-left: 18px; border-left: 2px solid var(--antique-gold); color: var(--ink); font-family: var(--font-hindi-family); font-size: 1.08rem; line-height: 2; }
-.barat-translation { margin: 14px 0 0; color: var(--muted-foreground); font-size: 0.92rem; line-height: 1.7; }
-.barat-method { margin: 16px 0 0; color: var(--royal-maroon); font-size: 0.86rem; font-weight: 600; }
+.barat-copy blockquote { max-width: 560px; margin: 0; padding-left: 18px; border-left: 2px solid var(--antique-gold); color: var(--ink); font-family: var(--font-hindi-family); font-size: 1.18rem; line-height: 2; }
+.barat-translation { margin: 14px 0 0; color: var(--muted-foreground); font-size: 1.02rem; line-height: 1.7; }
+.barat-method { margin: 16px 0 0; color: var(--royal-maroon); font-size: 0.98rem; font-weight: 600; }
 .travel-card { position: relative; padding: 28px 30px; border: 1px solid color-mix(in oklab, var(--antique-gold) 56%, transparent); background: linear-gradient(155deg, var(--soft-paper), var(--ivory)); box-shadow: var(--shadow-soft); }
 .travel-pin { width: 24px; height: 24px; margin-bottom: 14px; color: var(--royal-maroon); }
-.travel-label { margin: 0 0 12px; color: var(--antique-gold); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
-.travel-address, .travel-address-en { margin: 0; white-space: pre-line; font-family: var(--font-hindi-family); font-size: 0.98rem; line-height: 1.9; }
-.travel-address-en { margin-top: 10px; color: var(--muted-foreground); font-family: var(--font-body); font-size: 0.78rem; }
-.travel-time { display: inline-flex; margin-top: 18px; padding-top: 14px; border-top: 1px solid color-mix(in oklab, var(--antique-gold) 45%, transparent); color: var(--royal-maroon); font-size: 0.76rem; font-weight: 700; letter-spacing: 0.08em; }
+.travel-label { margin: 0 0 12px; color: var(--antique-gold); font-size: 0.84rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+.travel-address, .travel-address-en { margin: 0; white-space: pre-line; font-family: var(--font-hindi-family); font-size: 1.1rem; line-height: 1.9; }
+.travel-address-en { margin-top: 10px; color: var(--muted-foreground); font-family: var(--font-body); font-size: 0.92rem; }
+.travel-time { display: inline-flex; margin-top: 18px; padding-top: 14px; border-top: 1px solid color-mix(in oklab, var(--antique-gold) 45%, transparent); color: var(--royal-maroon); font-size: 0.9rem; font-weight: 700; letter-spacing: 0.06em; }
 
 /* Venue Section */
 .venue-section { position: relative; display: grid; grid-template-columns: 0.9fr 1fr; align-items: center; gap: 70px; padding-block: 75px 105px; border-top: 1px solid color-mix(in oklab, var(--antique-gold) 35%, transparent); }
@@ -329,17 +422,17 @@
 .venue-art-overlay { position: absolute; inset: 0; display: grid; place-items: center; background: color-mix(in oklab, var(--deep-burgundy) 45%, transparent); }
 .venue-art-overlay svg { width: 44px; height: 44px; color: var(--ivory); padding: 10px; border: 1px solid var(--antique-gold); border-radius: 50%; background: color-mix(in oklab, var(--royal-maroon) 82%, transparent); }
 .venue-copy h2 { margin-bottom: 18px; color: var(--royal-maroon); }
-.venue-copy > p:not(.section-kicker) { max-width: 420px; margin: 0; color: var(--muted-foreground); font-family: var(--font-hindi-family); font-size: 1.05rem; line-height: 1.9; }
-.venue-status { display: inline-flex; align-items: center; gap: 8px; margin-top: 22px; padding: 7px 14px; border: 1px solid color-mix(in oklab, var(--emerald) 35%, transparent); background: color-mix(in oklab, var(--emerald) 8%, var(--ivory)); color: var(--emerald); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; }
-.venue-confirmed h3 { margin: 0 0 10px; font-family: var(--font-display-family); font-size: 1.5rem; color: var(--royal-maroon); }
-.venue-address { margin: 0 0 18px; color: var(--muted-foreground); line-height: 1.8; }
-.venue-map-link { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; background: var(--royal-maroon); color: var(--ivory); text-decoration: none; font-size: 0.82rem; font-weight: 600; border-radius: 2px; }
+.venue-copy > p:not(.section-kicker) { max-width: 440px; margin: 0; color: var(--muted-foreground); font-family: var(--font-hindi-family); font-size: 1.15rem; line-height: 1.9; }
+.venue-status { display: inline-flex; align-items: center; gap: 8px; margin-top: 22px; padding: 8px 15px; border: 1px solid color-mix(in oklab, var(--emerald) 35%, transparent); background: color-mix(in oklab, var(--emerald) 8%, var(--ivory)); color: var(--emerald); font-size: 0.86rem; font-weight: 700; letter-spacing: 0.06em; }
+.venue-confirmed h3 { margin: 0 0 10px; font-family: var(--font-display-family); font-size: 1.65rem; color: var(--royal-maroon); }
+.venue-address { margin: 0 0 18px; color: var(--muted-foreground); font-size: 1rem; line-height: 1.8; }
+.venue-map-link { display: inline-flex; align-items: center; gap: 8px; padding: 11px 20px; background: var(--royal-maroon); color: var(--ivory); text-decoration: none; font-size: 0.94rem; font-weight: 600; border-radius: 2px; }
 .venue-map-link:hover { background: var(--deep-burgundy); }
 
 /* Gallery Section */
 .gallery-section { padding-block: 110px 120px; }
 .gallery-filters { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: -12px 0 34px; }
-.gallery-filters button { border-radius: 2px; font-size: 0.74rem; }
+.gallery-filters button { border-radius: 2px; font-size: 0.88rem; }
 .gallery-grid { columns: 3 280px; column-gap: 16px; }
 .gallery-tile { break-inside: avoid; display: grid; align-content: stretch; width: 100%; min-height: 265px; margin-bottom: 16px; padding: 0; overflow: hidden; border: 1px solid color-mix(in oklab, var(--antique-gold) 45%, transparent); border-radius: 0; background: var(--champagne); color: var(--ink); text-align: left; white-space: normal; transition: transform 300ms ease, box-shadow 300ms ease; }
 .gallery-tile:nth-child(3n + 1) { min-height: 330px; }
@@ -347,18 +440,18 @@
 .gallery-art { position: relative; display: grid; place-items: center; min-height: 210px; overflow: hidden; background: linear-gradient(155deg, var(--champagne), color-mix(in oklab, var(--soft-rose) 42%, var(--champagne))); }
 .gallery-mandala { position: absolute; width: 170px; height: 170px; color: color-mix(in oklab, var(--antique-gold) 32%, transparent); }
 .gallery-art > svg:not(.gallery-mandala) { position: relative; z-index: 1; width: 36px; height: 36px; color: var(--royal-maroon); stroke-width: 0.9; }
-.gallery-art > span { position: absolute; bottom: 13px; z-index: 1; padding: 4px 10px; background: color-mix(in oklab, var(--ivory) 82%, transparent); color: var(--muted-foreground); font-size: 0.62rem; }
+.gallery-art > span { position: absolute; bottom: 13px; z-index: 1; padding: 5px 11px; background: color-mix(in oklab, var(--ivory) 88%, transparent); color: var(--muted-foreground); font-size: 0.8rem; }
 .gallery-caption { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-width: 0; padding: 14px 16px; background: var(--ivory); }
-.gallery-caption > span:first-child { overflow-wrap: anywhere; color: var(--royal-maroon); font-family: var(--font-hindi-family); font-size: 0.9rem; font-weight: 500; }
-.gallery-caption > span:last-child { flex: 0 0 auto; color: var(--muted-foreground); font-size: 0.62rem; }
+.gallery-caption > span:first-child { overflow-wrap: anywhere; color: var(--royal-maroon); font-family: var(--font-hindi-family); font-size: 1.02rem; font-weight: 500; }
+.gallery-caption > span:last-child { flex: 0 0 auto; color: var(--muted-foreground); font-size: 0.8rem; }
 
 /* Contact & Final Blessing */
 .contact-section { padding-block: 80px; background: var(--emerald); color: var(--ivory); }
 .contact-layout { display: grid; grid-template-columns: 1fr 0.8fr; gap: 60px; align-items: center; }
 .contact-copy .section-kicker { color: var(--champagne); }
 .contact-copy h2 { color: var(--ivory); font-family: var(--font-hindi-family); font-size: 2.55rem; }
-.contact-person { margin: 20px 0 6px; font-family: var(--font-hindi-family); font-size: 1.05rem; }
-.contact-address { margin: 0; color: color-mix(in oklab, var(--ivory) 78%, transparent); font-family: var(--font-hindi-family); font-size: 0.86rem; line-height: 1.85; white-space: pre-line; }
+.contact-person { margin: 20px 0 6px; font-family: var(--font-hindi-family); font-size: 1.18rem; }
+.contact-address { margin: 0; color: color-mix(in oklab, var(--ivory) 86%, transparent); font-family: var(--font-hindi-family); font-size: 1rem; line-height: 1.85; white-space: pre-line; }
 .contact-numbers { display: grid; gap: 13px; }
 .contact-number { display: flex; align-items: center; gap: 8px; padding-bottom: 12px; border-bottom: 1px solid color-mix(in oklab, var(--ivory) 28%, transparent); }
 .contact-number > a:first-child { display: inline-flex; flex: 1; align-items: center; gap: 9px; min-width: 0; color: var(--ivory); font-family: var(--font-display-family); font-size: 1.38rem; text-decoration: none; }
@@ -380,113 +473,168 @@
 .site-footer { display: grid; justify-items: center; gap: 11px; padding: 34px 20px 44px; background: #260913; color: var(--ivory); text-align: center; border-top: 1px solid color-mix(in oklab, var(--antique-gold) 25%, transparent); }
 .footer-mark { display: inline-flex; align-items: center; gap: 7px; color: var(--champagne); font-family: var(--font-display-family); font-size: 1.4rem; text-decoration: none; }
 .footer-mark svg { width: 13px; height: 13px; color: var(--antique-gold); fill: color-mix(in oklab, var(--antique-gold) 30%, transparent); }
-.site-footer p { margin: 0; color: color-mix(in oklab, var(--ivory) 75%, transparent); font-family: var(--font-hindi-family); font-size: 0.82rem; }
-.site-footer > span { color: var(--antique-gold); font-size: 0.62rem; letter-spacing: 0.16em; }
-
-/* Floating Music Player */
-.floating-music-pill {
-  position: fixed; right: 22px; bottom: 22px; z-index: 28;
-  display: inline-flex; align-items: center; gap: 11px;
-  padding: 9px 14px 9px 10px;
-  border: 1px solid color-mix(in oklab, var(--antique-gold) 68%, transparent);
-  border-radius: 999px;
-  background: color-mix(in oklab, var(--deep-burgundy) 94%, black);
-  color: var(--ivory);
-  box-shadow: var(--shadow-gold);
-  cursor: pointer;
-  transition: transform 220ms ease, background 220ms ease;
-}
-.floating-music-pill:hover { transform: translateY(-2px); background: var(--royal-maroon); }
-.floating-music-icon { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--antique-gold); color: var(--deep-burgundy); }
-.floating-music-icon svg { width: 15px; height: 15px; }
-.floating-music-text { display: grid; text-align: left; line-height: 1.25; }
-.floating-music-title { font-size: 0.7rem; font-weight: 600; color: var(--champagne); }
-.floating-music-status { font-size: 0.62rem; color: color-mix(in oklab, var(--ivory) 75%, transparent); }
-.music-equalizer { display: inline-flex; align-items: flex-end; gap: 2px; height: 14px; }
-.music-equalizer span { width: 2.5px; height: 4px; border-radius: 2px; background: var(--antique-gold); transition: height 200ms ease; }
-.floating-music-pill.is-playing .music-equalizer span:nth-child(1) { animation: eq-bar 0.9s ease-in-out infinite; }
-.floating-music-pill.is-playing .music-equalizer span:nth-child(2) { animation: eq-bar 0.7s 0.2s ease-in-out infinite; }
-.floating-music-pill.is-playing .music-equalizer span:nth-child(3) { animation: eq-bar 1.1s 0.35s ease-in-out infinite; }
+.site-footer p { margin: 0; color: color-mix(in oklab, var(--ivory) 82%, transparent); font-family: var(--font-hindi-family); font-size: 0.96rem; }
+.site-footer > span { color: var(--antique-gold); font-size: 0.8rem; letter-spacing: 0.14em; }
 
 .mobile-nav { display: none; }
 
 /* Intro Doors (3D Carved Haveli Doors) */
+/* ============================================================
+   TEMPLE DOOR INTRO OVERLAY
+   Layered photorealistic carved teak temple doors + alpha-masked
+   floral toran, hanging brass bells, banana leaves, standing
+   peacock samai oil lamps, stone steps & lotus mandala rangoli.
+   ============================================================ */
 .wedding-intro {
   position: fixed;
   inset: 0;
   z-index: 50;
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
   overflow: hidden;
-  perspective: 1800px;
-  perspective-origin: 50% 50%;
   background: transparent;
   color: var(--ivory);
-  transition: opacity 420ms ease 1180ms;
+  transform-origin: 50% 48%;
+  will-change: transform, opacity;
+  transition:
+    transform 2400ms cubic-bezier(0.32, 0.04, 0.18, 1) 900ms,
+    opacity 750ms ease 2650ms;
 }
 .wedding-intro.is-opening {
   pointer-events: none;
   opacity: 0;
+  transform: scale(2.85);
 }
-.wedding-intro::before {
-  position: absolute;
-  inset: 16px;
-  z-index: 5;
-  border: 1px solid color-mix(in oklab, var(--antique-gold) 60%, transparent);
-  box-shadow: inset 0 0 28px rgba(10, 2, 6, 0.55);
+
+/* Seamless top & bottom stone extensions on very tall portrait screens */
+.temple-cap {
+  flex: 1 1 0px;
+  width: 100%;
+  min-height: 0;
+}
+.temple-cap--top {
+  background: linear-gradient(180deg, #120c08 0%, #2a1e15 100%);
+}
+.temple-cap--bottom {
+  background: linear-gradient(180deg, #795d47 0%, #4b3729 45%, #20150e 100%);
+}
+
+/* Middle horizontal row: left stone courtyard wing + center doorway portal + right wing */
+.temple-middle-row {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.temple-wing {
+  position: relative;
+  flex: 1 1 0px;
+  min-width: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 85% 45% at 50% 60%, rgba(196, 154, 67, 0.08) 0%, transparent 72%),
+    linear-gradient(180deg, #251a12 0%, #1c130c 42%, #291c13 78%, #634937 100%);
+}
+.temple-wing::before {
   content: "";
-  pointer-events: none;
-  transition: opacity 450ms ease;
-}
-.wedding-intro::after {
-  position: absolute;
-  inset: 26px;
-  z-index: 5;
-  border: 1px solid color-mix(in oklab, var(--antique-gold) 28%, transparent);
-  content: "";
-  pointer-events: none;
-  transition: opacity 450ms ease;
-}
-.wedding-intro.is-opening::before,
-.wedding-intro.is-opening::after {
-  opacity: 0;
-}
-.intro-door-frame {
   position: absolute;
   inset: 0;
-  z-index: 2;
-  display: flex;
-  transform-style: preserve-3d;
-  perspective: 1800px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.16) 0px,
+    rgba(0, 0, 0, 0.16) 1px,
+    transparent 1px,
+    transparent 64px
+  );
+  opacity: 0.45;
+  pointer-events: none;
 }
-.intro-seam-shadow {
+.temple-wing--left::after {
+  content: "";
   position: absolute;
   top: 0;
+  right: 0;
   bottom: 0;
-  left: 50%;
-  z-index: 3;
-  width: 24px;
-  transform: translateX(-50%);
-  background: linear-gradient(90deg, transparent, rgba(12, 3, 7, 0.72) 50%, transparent);
+  width: 44px;
+  background: linear-gradient(90deg, transparent, rgba(10, 6, 3, 0.78));
+  border-right: 1px solid color-mix(in oklab, var(--antique-gold) 24%, transparent);
   pointer-events: none;
-  transition: opacity 350ms ease;
 }
-.is-opening .intro-seam-shadow {
-  opacity: 0;
-}
-.intro-pattern {
+.temple-wing--right::after {
+  content: "";
   position: absolute;
-  inset: 44px;
-  z-index: 3;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 44px;
+  background: linear-gradient(270deg, transparent, rgba(10, 6, 3, 0.78));
+  border-left: 1px solid color-mix(in oklab, var(--antique-gold) 24%, transparent);
   pointer-events: none;
-  background: repeating-conic-gradient(from 5deg at 50% 50%, color-mix(in oklab, var(--antique-gold) 8%, transparent) 0deg 1deg, transparent 1deg 12deg);
-  mask-image: radial-gradient(ellipse at center, black, transparent 68%);
 }
-.intro-pattern span { position: absolute; width: 17px; height: 17px; transform: rotate(45deg); border: 1px solid color-mix(in oklab, var(--antique-gold) 70%, transparent); }
-.intro-pattern span:nth-child(1) { top: 14%; left: 14%; }
-.intro-pattern span:nth-child(2) { top: 14%; right: 14%; }
-.intro-pattern span:nth-child(3) { bottom: 14%; left: 14%; }
-.intro-pattern span:nth-child(4) { right: 14%; bottom: 14%; }
+
+/* Fixed-ratio temple portal stage (768:1376 exact aspect parity) */
+.temple-stage {
+  position: relative;
+  width: min(100vw, calc(100dvh * 768 / 1376));
+  aspect-ratio: 768 / 1376;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+/* Edge vignette on desktop so stage merges smoothly into flanking temple walls */
+@media (min-width: 681px) {
+  .temple-stage::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 8;
+    pointer-events: none;
+    background: linear-gradient(
+      90deg,
+      rgba(12, 7, 4, 0.48) 0%,
+      transparent 3.5%,
+      transparent 96.5%,
+      rgba(12, 7, 4, 0.48) 100%
+    );
+  }
+}
+
+/* Exact rectangular opening behind garlands matching pixels (154..620, 290..1068) */
+.temple-doorway {
+  position: absolute;
+  left: 20.05%;
+  top: 21.07%;
+  width: 60.68%;
+  height: 56.55%;
+  z-index: 4;
+  display: flex;
+  perspective: 1450px;
+  perspective-origin: 50% 48%;
+}
+
+/* Warm golden light spilling from threshold as doors swing open */
+.intro-threshold-light {
+  position: absolute;
+  inset: -4% -6%;
+  z-index: 3;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 62% 72% at 50% 50%,
+    rgba(255, 224, 145, 0.55) 0%,
+    rgba(220, 160, 62, 0.22) 45%,
+    transparent 75%
+  );
+  transition: opacity 700ms ease 140ms;
+}
+.is-opening .intro-threshold-light {
+  opacity: 1;
+}
 
 .intro-door {
   position: relative;
@@ -494,61 +642,48 @@
   height: 100%;
   cursor: pointer;
   transform-style: preserve-3d;
-  backface-visibility: hidden;
-  background:
-    radial-gradient(ellipse at 50% 45%, rgba(164, 58, 86, 0.22) 0%, transparent 65%),
-    repeating-linear-gradient(
-      90deg,
-      rgba(20, 4, 10, 0.18) 0px,
-      rgba(20, 4, 10, 0.18) 2px,
-      transparent 2px,
-      transparent 14px,
-      rgba(212, 168, 83, 0.04) 14px,
-      rgba(212, 168, 83, 0.04) 15px,
-      transparent 15px,
-      transparent 44px
-    ),
-    linear-gradient(180deg, #2d0916 0%, #481024 45%, #370b1b 100%);
-  box-shadow:
-    inset 0 0 70px rgba(8, 2, 5, 0.72),
-    inset 0 2px 0 rgba(232, 195, 118, 0.25);
+  backface-visibility: visible;
+  background: #2f1909;
   transition:
-    transform 1550ms cubic-bezier(0.42, 0.04, 0.2, 1),
-    filter 1550ms ease;
+    transform 2400ms cubic-bezier(0.25, 0.08, 0.18, 1),
+    filter 2400ms ease;
 }
+.intro-door-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  user-select: none;
+  -webkit-user-drag: none;
+  transition: filter 280ms ease;
+}
+.intro-door:hover .intro-door-img {
+  filter: brightness(1.07) saturate(1.05);
+}
+
 .intro-door--left {
   transform-origin: left center;
-  border-right: 2px solid color-mix(in oklab, var(--antique-gold) 85%, #fff5d6);
-  box-shadow:
-    inset -12px 0 26px rgba(10, 2, 5, 0.55),
-    inset 18px 0 36px rgba(10, 2, 5, 0.45),
-    inset 0 0 70px rgba(8, 2, 5, 0.72);
 }
 .intro-door--right {
   transform-origin: right center;
-  border-left: 2px solid color-mix(in oklab, var(--antique-gold) 85%, #fff5d6);
-  box-shadow:
-    inset 12px 0 26px rgba(10, 2, 5, 0.55),
-    inset -18px 0 36px rgba(10, 2, 5, 0.45),
-    inset 0 0 70px rgba(8, 2, 5, 0.72);
 }
 .is-opening .intro-door--left {
-  transform: rotateY(106deg);
-  filter: brightness(0.76);
+  transform: rotateY(104deg);
+  filter: brightness(0.62);
 }
 .is-opening .intro-door--right {
-  transform: rotateY(-106deg);
-  filter: brightness(0.76);
+  transform: rotateY(-104deg);
+  filter: brightness(0.62);
 }
 
-/* 3D Door Edge Thickness */
+/* Solid dark teak wood edge thickness visible during 3D door swing */
 .door-thickness {
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 20px;
-  background: linear-gradient(90deg, #6b4c1e, #c99b42 45%, #5c3f18);
+  width: 18px;
   pointer-events: none;
+  background: linear-gradient(90deg, #271406, #4b2a0e 50%, #1d0e04);
 }
 .intro-door--left .door-thickness {
   right: 0;
@@ -561,171 +696,99 @@
   transform: rotateY(-90deg);
 }
 
-/* Brass Hinges */
-.door-hinge {
+/* Hairline ambient seam shadow down center of closed doors */
+.intro-seam-shadow {
   position: absolute;
-  width: 14px;
-  height: 44px;
-  border-radius: 3px;
-  background: linear-gradient(180deg, #8e6728, #f2d388 35%, #b68838 70%, #6f4f1c);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.65), inset 0 1px 1px rgba(255, 248, 214, 0.6);
-  z-index: 4;
-}
-.intro-door--left .door-hinge { left: 4px; }
-.intro-door--right .door-hinge { right: 4px; }
-.door-hinge--top { top: 15%; }
-.door-hinge--mid { top: 50%; transform: translateY(-50%); }
-.door-hinge--bottom { bottom: 15%; }
-
-/* Carved Recessed Door Panels */
-.door-panels {
-  position: absolute;
-  inset: clamp(34px, 5vh, 58px) clamp(26px, 4.5vw, 66px);
-  display: grid;
-  grid-template-rows: 1fr 1.15fr 0.85fr;
-  gap: clamp(14px, 2.2vh, 24px);
-  padding: clamp(12px, 2vw, 22px);
-  border: 1px solid color-mix(in oklab, var(--antique-gold) 45%, transparent);
-  background: linear-gradient(160deg, rgba(84, 21, 43, 0.35), rgba(29, 6, 14, 0.55));
-  box-shadow:
-    inset 0 3px 14px rgba(8, 2, 5, 0.72),
-    0 1px 0 rgba(232, 195, 118, 0.18);
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  z-index: 5;
+  width: 8px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, rgba(10, 4, 2, 0.72) 50%, transparent);
   pointer-events: none;
+  transition: opacity 260ms ease;
 }
-.door-panel {
-  position: relative;
-  border: 1px solid color-mix(in oklab, var(--antique-gold) 52%, transparent);
-  background: linear-gradient(145deg, rgba(64, 15, 33, 0.72), rgba(32, 7, 16, 0.88));
-  box-shadow:
-    inset 0 6px 18px rgba(6, 1, 4, 0.82),
-    inset 0 -2px 8px rgba(230, 192, 112, 0.14),
-    0 2px 6px rgba(0, 0, 0, 0.35);
-}
-.door-panel::after {
-  position: absolute;
-  inset: 8px;
-  border: 1px solid color-mix(in oklab, var(--antique-gold) 26%, transparent);
-  content: "";
-}
-.door-panel--arch {
-  border-top-left-radius: 110px 68px;
-  border-top-right-radius: 110px 68px;
-}
-.door-panel--arch::after {
-  border-top-left-radius: 100px 58px;
-  border-top-right-radius: 100px 58px;
-}
-.door-panel--medallion {
-  display: grid;
-  place-items: center;
-}
-.door-medallion-ring {
-  width: min(86px, 14vw);
-  height: min(86px, 14vw);
-  border: 1.5px solid color-mix(in oklab, var(--antique-gold) 58%, transparent);
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(212, 168, 83, 0.16) 0%, rgba(32, 7, 16, 0.65) 68%);
-  box-shadow:
-    inset 0 2px 8px rgba(0, 0, 0, 0.7),
-    0 0 18px rgba(212, 168, 83, 0.12);
+.is-opening .intro-seam-shadow {
+  opacity: 0;
 }
 
-/* 3D Brass Door Handles / Knockers */
-.door-handle {
-  position: absolute;
-  top: 50%;
-  z-index: 6;
-  width: 56px;
-  height: 118px;
-  transform: translateY(-50%) translateZ(8px);
-  transform-style: preserve-3d;
-  pointer-events: none;
-}
-.door-handle--left {
-  right: clamp(14px, 2.2vw, 30px);
-}
-.door-handle--right {
-  left: clamp(14px, 2.2vw, 30px);
-}
-.door-handle-plate {
+/* Alpha-masked foreground temple pillars, garlands, lamps, steps & rangoli */
+.temple-frame-img {
   position: absolute;
   inset: 0;
-  border-radius: 28px;
-  border: 1px solid #f4da93;
-  background: linear-gradient(135deg, #f3d78a 0%, #b78734 45%, #734f17 75%, #d6aa55 100%);
-  box-shadow:
-    0 10px 22px rgba(6, 1, 3, 0.78),
-    inset 0 2px 3px rgba(255, 250, 224, 0.75),
-    inset 0 -3px 6px rgba(58, 36, 8, 0.8);
-}
-.door-handle-plate::after {
-  position: absolute;
-  inset: 6px;
-  border-radius: 22px;
-  border: 1px solid rgba(58, 36, 8, 0.55);
-  box-shadow: inset 0 1px 2px rgba(255, 245, 200, 0.45);
-  content: "";
-}
-.door-handle-boss {
-  position: absolute;
-  top: 32px;
-  left: 50%;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  transform: translateX(-50%) translateZ(6px);
-  background: radial-gradient(circle at 35% 30%, #fff3c4 0%, #dfb258 45%, #724e16 100%);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.72);
-}
-.door-handle-ring {
-  position: absolute;
-  top: 42px;
-  left: 50%;
-  width: 38px;
-  height: 44px;
-  border: 5px solid #d9ac56;
-  border-radius: 50%;
-  transform: translateX(-50%) translateZ(10px) rotateX(14deg);
-  transform-origin: top center;
-  box-shadow:
-    0 8px 14px rgba(0, 0, 0, 0.75),
-    inset 0 2px 3px rgba(255, 248, 210, 0.75);
-  transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-.intro-door:hover .door-handle-ring {
-  transform: translateX(-50%) translateZ(14px) rotateX(28deg);
-}
-.is-opening .door-handle-ring {
-  transform: translateX(-50%) translateZ(14px) rotateX(36deg);
+  z-index: 6;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
-.intro-center {
-  position: relative;
-  z-index: 4;
-  display: grid;
-  justify-items: center;
-  width: min(620px, calc(100% - 42px));
-  padding: 35px 0;
-  text-align: center;
-  transform: translateZ(32px);
-  animation: reveal-soft 1.1s 250ms ease both;
-  transition: opacity 380ms ease, transform 420ms ease;
+/* Gentle flickering candlelight halos positioned over brass samai & step diyas */
+.intro-flame-glow {
+  position: absolute;
+  z-index: 7;
+  width: 7%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 214, 118, 0.42) 0%, rgba(255, 165, 48, 0.14) 45%, transparent 72%);
+  mix-blend-mode: screen;
+  animation: flame-pulse 2.2s ease-in-out infinite alternate;
 }
-.intro-blessing { color: var(--champagne); font-family: var(--font-hindi-family); font-size: 1.05rem; }
-.intro-symbol { position: relative; display: grid; place-items: center; width: 104px; height: 104px; margin: 27px 0 17px; border: 1px solid var(--antique-gold); border-radius: 50%; color: var(--antique-gold); background: radial-gradient(circle, rgba(45, 9, 22, 0.75), rgba(25, 4, 12, 0.9)); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45); }
-.intro-symbol::before, .intro-symbol::after { position: absolute; inset: -8px; transform: rotate(45deg); border: 1px solid color-mix(in oklab, var(--antique-gold) 55%, transparent); content: ""; }
-.intro-symbol::after { transform: rotate(22.5deg); }
-.intro-symbol svg { width: 62px; height: 62px; stroke-width: 0.65; }
-.intro-symbol b { position: absolute; font-family: var(--font-hindi-family); font-size: 1.9rem; font-weight: 400; }
-.intro-center > p { margin: 0 0 15px; color: color-mix(in oklab, var(--ivory) 85%, transparent); font-family: var(--font-display-family); font-size: 1.11rem; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.65); }
-.intro-center h2 { display: flex; align-items: center; justify-content: center; gap: 13px; margin: 0; color: var(--ivory); font-family: var(--font-display-family); font-size: clamp(1.7rem, 5vw, 3.2rem); font-weight: 500; text-shadow: 0 4px 18px rgba(0, 0, 0, 0.72); }
-.intro-center h2 svg { width: 19px; height: 19px; color: var(--antique-gold); fill: color-mix(in oklab, var(--antique-gold) 25%, transparent); }
-.intro-date { margin-top: 16px; color: var(--antique-gold); font-size: 0.72rem; letter-spacing: 0.2em; }
-.intro-open-button { margin-top: 29px; min-height: 47px; padding-inline: 22px; border: 1px solid var(--antique-gold); border-radius: 2px; background: var(--antique-gold); color: var(--deep-burgundy); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45); }
-.intro-open-button:hover { background: var(--champagne); color: var(--deep-burgundy); }
-.intro-skip { position: absolute; right: 48px; bottom: 45px; z-index: 6; color: var(--champagne); font-size: 0.72rem; transition: opacity 320ms ease; }
-.intro-skip:hover { background: color-mix(in oklab, var(--ivory) 12%, transparent); color: var(--ivory); }
-.is-opening .intro-center, .is-opening .intro-pattern, .is-opening .intro-skip { opacity: 0; transform: translateZ(12px) scale(0.96); }
+.intro-flame-glow--hang-left   { left: 7.4%;  top: 30.8%; animation-delay: 0s; }
+.intro-flame-glow--hang-right  { left: 92.6%; top: 30.8%; animation-delay: -0.9s; }
+.intro-flame-glow--stand-left  { left: 17.5%; top: 59.6%; width: 9%; animation-delay: -0.4s; }
+.intro-flame-glow--stand-right { left: 82.5%; top: 59.6%; width: 9%; animation-delay: -1.4s; }
+.intro-flame-glow--center-diya { left: 50%;   top: 93.1%; width: 10%; animation-delay: -0.7s; }
+
+@keyframes flame-pulse {
+  0%   { opacity: 0.55; transform: translate(-50%, -50%) scale(0.92); }
+  50%  { opacity: 0.92; transform: translate(-50%, -50%) scale(1.06); }
+  100% { opacity: 0.68; transform: translate(-50%, -50%) scale(0.98); }
+}
+
+/* Sacred Ganesh invocation tucked cleanly onto the upper stone lintel frieze */
+.intro-lintel-wrap {
+  position: absolute;
+  top: 5.4%;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  animation: fade-soft 900ms 120ms ease both;
+  transition: opacity 280ms ease;
+}
+.intro-lintel-mantra {
+  padding: 4px 14px;
+  color: #f6e4b8;
+  font-family: var(--font-hindi-family);
+  font-size: clamp(0.76rem, 2.2vw, 1rem);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-shadow:
+    0 2px 10px rgba(0, 0, 0, 0.95),
+    0 0 18px rgba(196, 154, 67, 0.48);
+  white-space: nowrap;
+}
+.is-opening .intro-lintel-wrap {
+  opacity: 0;
+}
+
+@keyframes fade-soft {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes plaque-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
 /* Lightbox Viewer */
 .gallery-viewer { position: fixed; inset: 0; z-index: 60; display: grid; grid-template-columns: 64px minmax(0, 1fr) 64px; grid-template-rows: 1fr auto; align-items: center; gap: 12px; padding: 65px 4vw 38px; background: color-mix(in oklab, var(--deep-burgundy) 96%, black); color: var(--ivory); }
@@ -753,6 +816,181 @@
   100% { opacity: 0; transform: translate3d(28px, 620px, 0) rotate(220deg); }
 }
 
+/* Complete-site royal stage curtains */
+.stage-curtains {
+  position: fixed;
+  inset: 0;
+  z-index: 22;
+  pointer-events: none;
+  overflow: hidden;
+  perspective: 900px;
+}
+.stage-curtain {
+  position: absolute;
+  top: -16px;
+  bottom: -16px;
+  width: clamp(64px, 8.2vw, 130px);
+  transform-origin: top center;
+  will-change: transform;
+}
+.stage-curtain--left {
+  left: -4px;
+  filter: drop-shadow(10px 0 22px color-mix(in oklab, var(--deep-burgundy) 45%, transparent));
+  animation: curtain-breeze-left 6.8s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+.stage-curtain--right {
+  right: -4px;
+  filter: drop-shadow(-10px 0 22px color-mix(in oklab, var(--deep-burgundy) 45%, transparent));
+  animation: curtain-breeze-right 7.4s cubic-bezier(0.37, 0, 0.63, 1) -2.1s infinite;
+}
+.curtain-body {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.stage-curtain--left .curtain-body {
+  clip-path: polygon(
+    0% 0%, 100% 0%, 96% 14%, 85% 28%, 68% 40%, 60% 45%,
+    60% 48%, 74% 58%, 90% 74%, 98% 89%, 100% 100%, 0% 100%
+  );
+}
+.stage-curtain--right .curtain-body {
+  clip-path: polygon(
+    0% 0%, 100% 0%, 100% 100%, 0% 100%, 2% 89%, 10% 74%,
+    26% 58%, 40% 48%, 40% 45%, 32% 40%, 15% 28%, 4% 14%
+  );
+}
+.curtain-folds {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #2b0612 0px,
+      #591227 8px,
+      #801e3b 15px,
+      #3f0b1c 23px,
+      #65152D 31px
+    );
+  background-size: 140% 100%;
+  animation: curtain-fold-ripple 5.6s ease-in-out infinite;
+}
+.stage-curtain--right .curtain-folds {
+  animation-delay: -2.8s;
+}
+.curtain-sheen {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 20%,
+    rgba(255, 249, 239, 0.09) 45%,
+    rgba(232, 201, 106, 0.11) 52%,
+    transparent 74%
+  );
+  background-size: 200% 200%;
+  animation: curtain-velvet-sheen 7.5s ease-in-out infinite;
+}
+.curtain-pinch-shadow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 95% 18% at 50% 46.5%,
+    rgba(26, 4, 10, 0.52) 0%,
+    rgba(26, 4, 10, 0.18) 55%,
+    transparent 100%
+  );
+}
+.curtain-tieback {
+  position: absolute;
+  top: 41.5%;
+  left: 0;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  filter: drop-shadow(0 3px 6px rgba(26, 4, 10, 0.6));
+}
+.stage-curtain--left .curtain-tassel-group {
+  transform-box: fill-box;
+  transform-origin: 50% 4px;
+  animation: tassel-swing 4.6s ease-in-out infinite;
+}
+.stage-curtain--right .curtain-tassel-group {
+  transform-box: fill-box;
+  transform-origin: 50% 4px;
+  animation: tassel-swing 4.6s ease-in-out -1.9s infinite;
+}
+@keyframes curtain-breeze-left {
+  0%, 100% { transform: translateX(0) skewX(0deg) scaleX(1); }
+  28% { transform: translateX(5px) skewX(-1.3deg) scaleX(1.06); }
+  57% { transform: translateX(-2px) skewX(0.6deg) scaleX(0.97); }
+  82% { transform: translateX(4px) skewX(-0.9deg) scaleX(1.04); }
+}
+@keyframes curtain-breeze-right {
+  0%, 100% { transform: translateX(0) skewX(0deg) scaleX(1); }
+  30% { transform: translateX(-5px) skewX(1.3deg) scaleX(1.06); }
+  60% { transform: translateX(2px) skewX(-0.6deg) scaleX(0.97); }
+  84% { transform: translateX(-4px) skewX(0.9deg) scaleX(1.04); }
+}
+@keyframes curtain-fold-ripple {
+  0%, 100% { background-position: 0% 0%; }
+  50% { background-position: 28% 0%; }
+}
+@keyframes curtain-velvet-sheen {
+  0%, 100% { background-position: 0% 20%; opacity: 0.55; }
+  50% { background-position: 80% 70%; opacity: 1; }
+}
+@keyframes tassel-swing {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(5deg); }
+  55% { transform: rotate(-3.5deg); }
+  80% { transform: rotate(3deg); }
+}
+
+/* 1-second celebratory petal & flower burst on door open */
+.door-petal-shower {
+  position: fixed;
+  inset: 0;
+  z-index: 65;
+  pointer-events: none;
+  overflow: hidden;
+}
+.burst-particle {
+  position: absolute;
+  top: -38px;
+  opacity: 0;
+  animation: burst-fall 2.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+.burst-particle svg {
+  width: 19px;
+  height: 19px;
+  filter: drop-shadow(0 2px 6px rgba(59, 16, 32, 0.32));
+}
+.burst-petal-shape {
+  display: block;
+  width: 13px;
+  height: 17px;
+  border-radius: 65% 35% 60% 40% / 55% 65% 35% 45%;
+  background: linear-gradient(135deg, var(--soft-rose), #b83254);
+  box-shadow: 0 2px 6px rgba(59, 16, 32, 0.25);
+}
+@keyframes burst-fall {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -20px, 0) scale(var(--burst-scale, 1)) rotate(0deg);
+  }
+  10% {
+    opacity: 0.96;
+  }
+  75% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--burst-drift, 24px), 108vh, 0) scale(var(--burst-scale, 1)) rotate(320deg);
+  }
+}
+
 @media (max-width: 960px) {
   .desktop-nav { gap: 16px; }
   .site-header { padding-inline: 24px; }
@@ -767,25 +1005,26 @@
 }
 
 @media (max-width: 680px) {
+  html { font-size: 16.5px; }
   .section-wrap { width: min(100% - 32px, 540px); }
   .site-header { min-height: 64px; padding-inline: 16px; }
   .wordmark { gap: 7px; font-size: 1.15rem; }
-  .wordmark-mark { width: 28px; height: 28px; }
+  .wordmark-mark { width: 30px; height: 30px; }
   .desktop-nav { display: none; }
   .header-actions { gap: 6px; }
-  .language-switch button { height: 30px; padding-inline: 5px; font-size: 0.68rem; }
+  .language-switch button { height: 30px; padding-inline: 5px; font-size: 0.82rem; }
   .music-button { width: 34px; height: 34px; }
   .hero { min-height: 700px; min-height: 86svh; }
   .hero-frame { inset: 12px; }
   .hero-inner { padding: 52px 0 92px; }
-  .hero-eyebrow { margin-bottom: 16px; font-size: 0.94rem; }
-  .hero h1 { font-size: clamp(2.45rem, 12vw, 3.9rem); }
-  .hero-deck { max-width: 330px; margin-top: 20px; font-size: 0.95rem; }
-  .hero-date { font-size: 0.72rem; line-height: 1.7; }
+  .hero-eyebrow { margin-bottom: 16px; font-size: 1.08rem; }
+  .hero h1 { font-size: clamp(2.65rem, 12vw, 4.1rem); }
+  .hero-deck { max-width: 340px; margin-top: 20px; font-size: 1.08rem; }
+  .hero-date { font-size: 0.88rem; line-height: 1.7; }
   .countdown { gap: 8px; margin-top: 28px; }
-  .countdown-unit { min-width: 64px; padding: 10px 6px; }
-  .countdown-number { font-size: 1.65rem; }
-  .countdown-label { font-size: 0.56rem; }
+  .countdown-unit { min-width: 68px; padding: 10px 6px; }
+  .countdown-number { font-size: 1.8rem; }
+  .countdown-label { font-size: 0.72rem; }
   .hero-ornament { width: 120px; opacity: 0.5; }
   .hero-ornament-left { left: -24px; }
   .hero-ornament-right { right: -24px; }
@@ -829,9 +1068,6 @@
   .contact-layout { grid-template-columns: 1fr; gap: 30px; }
   .final-blessing-section { padding-block: 58px; }
   .site-footer { padding-bottom: 112px; }
-  .floating-music-pill { right: 14px; bottom: 76px; padding: 7px 12px 7px 8px; }
-  .floating-music-title { font-size: 0.65rem; }
-  .floating-music-status { display: none; }
   .mobile-nav {
     position: fixed; right: 0; bottom: 0; left: 0; z-index: 26;
     display: grid; grid-template-columns: repeat(3, 1fr);
@@ -840,23 +1076,11 @@
     background: color-mix(in oklab, var(--ivory) 96%, transparent);
     backdrop-filter: blur(12px);
   }
-  .mobile-nav a { display: grid; justify-items: center; align-content: center; gap: 3px; color: var(--royal-maroon); font-size: 0.62rem; font-weight: 500; text-decoration: none; }
+  .mobile-nav a { display: grid; justify-items: center; align-content: center; gap: 3px; color: var(--royal-maroon); font-size: 0.76rem; font-weight: 500; text-decoration: none; }
   .mobile-nav svg { width: 17px; height: 17px; stroke-width: 1.6; }
-  .intro-pattern { inset: 38px; }
-  .wedding-intro::before { inset: 13px; }
-  .wedding-intro::after { inset: 21px; }
-  .door-panels { inset: 26px 14px; gap: 10px; padding: 8px; }
-  .door-handle { width: 38px; height: 84px; }
-  .door-handle--left { right: 8px; }
-  .door-handle--right { left: 8px; }
-  .door-handle-boss { top: 22px; width: 16px; height: 16px; }
-  .door-handle-ring { top: 30px; width: 26px; height: 32px; border-width: 4px; }
-  .intro-center { width: calc(100% - 48px); }
-  .intro-center h2 { gap: 8px; font-size: clamp(1.52rem, 7vw, 2.25rem); }
-  .intro-symbol { width: 84px; height: 84px; margin-top: 22px; }
-  .intro-skip { right: 20px; bottom: 24px; }
   .gallery-viewer { grid-template-columns: 36px minmax(0, 1fr) 36px; gap: 4px; padding: 65px 8px 35px; }
   .viewer-art { height: min(62vh, 600px); }
+  .stage-curtain { width: 28px; }
 }
 
 @media (max-width: 380px) {
@@ -877,4 +1101,5 @@
     transition-duration: 0.01ms !important;
   }
   .floating-atmosphere { display: none; }
+  .door-petal-shower { display: none; }
 }

@@ -20,15 +20,17 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import { FloatingMusicPlayer } from "@/components/FloatingMusicPlayer";
 import {
+  DoorPetalShower,
   FloatingAtmosphere,
   FloralDivider,
   MandalaWatermark,
+  StageCurtains,
+  TopGarland,
   WeddingImage,
 } from "@/components/WeddingOrnaments";
 import { Button } from "@/components/ui/button";
-import { weddingImages } from "@/data/imageConfig";
+import { heroSlideshowImages, weddingImages } from "@/data/imageConfig";
 import {
   weddingConfig,
   weddingCopy,
@@ -84,6 +86,7 @@ function WeddingInvitation() {
   const [language, setLanguage] = useState<Language>("hi");
   const [introVisible, setIntroVisible] = useState(true);
   const [introOpening, setIntroOpening] = useState(false);
+  const [doorShowerActive, setDoorShowerActive] = useState(false);
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [playing, setPlaying] = useState(false);
   const [musicError, setMusicError] = useState(false);
@@ -91,6 +94,7 @@ function WeddingInvitation() {
   const [copiedNumber, setCopiedNumber] = useState("");
   const [activeGallery, setActiveGallery] = useState<number | null>(null);
   const [galleryCategory, setGalleryCategory] = useState<GalleryCategory>("all");
+  const [heroSlide, setHeroSlide] = useState(0);
   const [heroParallax, setHeroParallax] = useState(0);
   const audioRef = useRef<HTMLAudioElement>(null);
   const touchStartX = useRef<number | null>(null);
@@ -102,7 +106,13 @@ function WeddingInvitation() {
     const tick = () => setCountdown(getCountdown());
     tick();
     const timer = window.setInterval(tick, 1_000);
-    return () => window.clearInterval(timer);
+    const slideTimer = window.setInterval(() => {
+      setHeroSlide((current) => (current + 1) % heroSlideshowImages.length);
+    }, 5_500);
+    return () => {
+      window.clearInterval(timer);
+      window.clearInterval(slideTimer);
+    };
   }, []);
 
   useEffect(() => {
@@ -176,8 +186,10 @@ function WeddingInvitation() {
   const openInvitation = () => {
     if (introOpening) return;
     setIntroOpening(true);
+    setDoorShowerActive(true);
     void startMusic();
-    window.setTimeout(() => setIntroVisible(false), 1_650);
+    window.setTimeout(() => setIntroVisible(false), 3_450);
+    window.setTimeout(() => setDoorShowerActive(false), 5_800);
   };
 
   const toggleMusic = async () => {
@@ -281,6 +293,8 @@ function WeddingInvitation() {
 
   return (
     <main className="wedding-page">
+      <StageCurtains />
+      <DoorPetalShower active={doorShowerActive} />
       {weddingConfig.audioUrl ? (
         <audio
           ref={audioRef}
@@ -301,7 +315,39 @@ function WeddingInvitation() {
       <header className="site-header">
         <a className="wordmark" href="#home" aria-label="Aditya and Anjali home">
           <span className="wordmark-mark">
-            <Flower2 aria-hidden="true" />
+            {/* Kissing swans forming a heart — classic wedding motif */}
+            <svg aria-hidden="true" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {/* Left swan neck & head curving into heart arch */}
+              <path
+                d="M16 10.8 C14.5 7.8 10.2 7.5 9.2 11.2 C8.2 14.8 12.2 18.2 15.6 21.2 C11.8 22.2 7.2 21.8 5.2 18.8 C6.8 22.8 10.8 24.4 15.8 23.6"
+                stroke="currentColor"
+                strokeWidth="1.65"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              {/* Right swan neck & head curving into heart arch */}
+              <path
+                d="M16 10.8 C17.5 7.8 21.8 7.5 22.8 11.2 C23.8 14.8 19.8 18.2 16.4 21.2 C20.2 22.2 24.8 21.8 26.8 18.8 C25.2 22.8 21.2 24.4 16.2 23.6"
+                stroke="currentColor"
+                strokeWidth="1.65"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              {/* Delicate heart at center */}
+              <path
+                d="M16 17.8 C16 17.8 13.2 15.8 13.2 14 C13.2 12.9 14.1 12.2 15 12.6 C15.5 12.8 15.8 13.3 16 13.7 C16.2 13.3 16.5 12.8 17 12.6 C17.9 12.2 18.8 12.9 18.8 14 C18.8 15.8 16 17.8 16 17.8 Z"
+                fill="currentColor"
+                opacity="0.9"
+              />
+              {/* Gentle water ripple */}
+              <path
+                d="M9 26.4 Q16 27.6 23 26.4"
+                stroke="currentColor"
+                strokeWidth="1.35"
+                strokeLinecap="round"
+                opacity="0.78"
+              />
+            </svg>
           </span>
           <span>
             Aditya <i>&amp;</i> Anjali
@@ -352,6 +398,7 @@ function WeddingInvitation() {
             )}
           </Button>
         </div>
+        <TopGarland />
       </header>
 
       {musicError ? (
@@ -366,16 +413,21 @@ function WeddingInvitation() {
           style={{ transform: `translate3d(0, ${heroParallax}px, 0) scale(1.06)` }}
           aria-hidden="true"
         >
-          <WeddingImage
-            src={weddingImages.heroBackground.src}
-            alt={
-              language === "hi"
-                ? weddingImages.heroBackground.altHi
-                : weddingImages.heroBackground.altEn
-            }
-            fallbackGradient={weddingImages.heroBackground.fallbackGradient}
-            priority
-          />
+          <div className="hero-slideshow">
+            {heroSlideshowImages.map((slide, index) => (
+              <div
+                key={slide.src}
+                className={`hero-slide${index === heroSlide ? " is-active" : ""}`}
+              >
+                <WeddingImage
+                  src={slide.src}
+                  alt={language === "hi" ? slide.altHi : slide.altEn}
+                  fallbackGradient={slide.fallbackGradient}
+                  priority={index === 0}
+                />
+              </div>
+            ))}
+          </div>
           <div className="hero-scrim" />
         </div>
         <FloatingAtmosphere variant="hero" />
@@ -400,10 +452,6 @@ function WeddingInvitation() {
           <p className="hero-deck">{copy.heroQuote}</p>
           <p className="hero-date">
             {language === "hi" ? weddingConfig.wedding.dateHi : weddingConfig.wedding.dateEn}
-          </p>
-          <p className="hero-location">
-            <MapPin size={15} aria-hidden="true" />
-            {language === "hi" ? weddingConfig.locationShortHi : weddingConfig.locationShort}
           </p>
           <div className="countdown" aria-label={copy.countdownLabel}>
             {(["days", "hours", "minutes", "seconds"] as const).map((unit) => (
@@ -812,15 +860,6 @@ function WeddingInvitation() {
         </span>
       </footer>
 
-      <FloatingMusicPlayer
-        playing={playing}
-        error={musicError}
-        label={copy.musicLabel}
-        statusText={playing ? copy.musicPlaying : copy.musicPaused}
-        ariaLabel={playing ? copy.pauseMusic : copy.playMusic}
-        onToggle={() => void toggleMusic()}
-      />
-
       <nav className="mobile-nav" aria-label={copy.primaryNavigation}>
         <a href="#home">
           <Flower2 aria-hidden="true" />
@@ -843,77 +882,68 @@ function WeddingInvitation() {
           aria-modal="true"
           aria-label={copy.openingInvitation}
         >
-          <div className="intro-door-frame" aria-hidden="true">
-            <div className="intro-door intro-door--left" onClick={openInvitation}>
-              <span className="door-hinge door-hinge--top" />
-              <span className="door-hinge door-hinge--mid" />
-              <span className="door-hinge door-hinge--bottom" />
-              <div className="door-panels">
-                <div className="door-panel door-panel--arch" />
-                <div className="door-panel door-panel--medallion">
-                  <span className="door-medallion-ring" />
+          <span className="temple-cap temple-cap--top" aria-hidden="true" />
+
+          <div className="temple-middle-row">
+            <span className="temple-wing temple-wing--left" aria-hidden="true" />
+
+            <div className="temple-stage">
+              <div className="temple-doorway">
+                <span className="intro-threshold-light" aria-hidden="true" />
+                <div
+                  className="intro-door intro-door--left"
+                  onClick={openInvitation}
+                  aria-hidden="true"
+                >
+                  <img
+                    src={weddingImages.templeDoorLeft.src}
+                    alt=""
+                    loading="eager"
+                    decoding="sync"
+                    className="intro-door-img"
+                  />
+                  <span className="door-thickness" />
                 </div>
-                <div className="door-panel door-panel--base" />
+                <div
+                  className="intro-door intro-door--right"
+                  onClick={openInvitation}
+                  aria-hidden="true"
+                >
+                  <img
+                    src={weddingImages.templeDoorRight.src}
+                    alt=""
+                    loading="eager"
+                    decoding="sync"
+                    className="intro-door-img"
+                  />
+                  <span className="door-thickness" />
+                </div>
+                <span className="intro-seam-shadow" aria-hidden="true" />
               </div>
-              <div className="door-handle door-handle--left">
-                <span className="door-handle-plate" />
-                <span className="door-handle-boss" />
-                <span className="door-handle-ring" />
+
+              <img
+                src={weddingImages.templeFrame.src}
+                alt={language === "hi" ? weddingImages.templeFrame.altHi : weddingImages.templeFrame.altEn}
+                loading="eager"
+                decoding="sync"
+                className="temple-frame-img"
+              />
+
+              <span className="intro-flame-glow intro-flame-glow--hang-left" aria-hidden="true" />
+              <span className="intro-flame-glow intro-flame-glow--hang-right" aria-hidden="true" />
+              <span className="intro-flame-glow intro-flame-glow--stand-left" aria-hidden="true" />
+              <span className="intro-flame-glow intro-flame-glow--stand-right" aria-hidden="true" />
+              <span className="intro-flame-glow intro-flame-glow--center-diya" aria-hidden="true" />
+
+              <div className="intro-lintel-wrap" aria-hidden="true">
+                <span className="intro-lintel-mantra">॥ श्री गणेशाय नमः ॥</span>
               </div>
-              <span className="door-thickness" />
             </div>
 
-            <div className="intro-door intro-door--right" onClick={openInvitation}>
-              <span className="door-hinge door-hinge--top" />
-              <span className="door-hinge door-hinge--mid" />
-              <span className="door-hinge door-hinge--bottom" />
-              <div className="door-panels">
-                <div className="door-panel door-panel--arch" />
-                <div className="door-panel door-panel--medallion">
-                  <span className="door-medallion-ring" />
-                </div>
-                <div className="door-panel door-panel--base" />
-              </div>
-              <div className="door-handle door-handle--right">
-                <span className="door-handle-plate" />
-                <span className="door-handle-boss" />
-                <span className="door-handle-ring" />
-              </div>
-              <span className="door-thickness" />
-            </div>
+            <span className="temple-wing temple-wing--right" aria-hidden="true" />
           </div>
-          <div className="intro-seam-shadow" aria-hidden="true" />
-          <div className="intro-pattern" aria-hidden="true">
-            <span />
-            <span />
-            <span />
-            <span />
-          </div>
-          <div className="intro-center">
-            <span className="intro-blessing">॥ श्री गणेशाय नमः ॥</span>
-            <span className="intro-symbol" aria-hidden="true">
-              <Flower2 />
-              <b>श्री</b>
-            </span>
-            <p>{copy.blessingOfAlmighty}</p>
-            <h2>
-              ADITYA <Heart aria-hidden="true" /> ANJALI
-            </h2>
-            <span className="intro-date">03 · 12 · 2026</span>
-            <Button type="button" className="intro-open-button" onClick={openInvitation}>
-              {copy.openInvitation}
-              <ArrowRight aria-hidden="true" />
-            </Button>
-          </div>
-          <Button
-            type="button"
-            variant="ghost"
-            className="intro-skip"
-            onClick={() => setIntroVisible(false)}
-          >
-            {copy.skipIntro}
-            <ArrowRight aria-hidden="true" />
-          </Button>
+
+          <span className="temple-cap temple-cap--bottom" aria-hidden="true" />
         </div>
       ) : null}
 
