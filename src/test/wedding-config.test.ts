@@ -27,11 +27,15 @@ describe("wedding invitation details", () => {
     ]);
   });
 
-  it("leaves the venue and couple photographs unconfirmed", () => {
-    expect(weddingConfig.venue.name).toBeNull();
-    expect(weddingConfig.venue.address).toBeNull();
-    expect(weddingConfig.venue.mapUrl).toBeNull();
-    expect(weddingConfig.photographs).toEqual({ groom: null, bride: null });
+  it("uses the confirmed Kushwaha Niwash venue and couple photograph", () => {
+    expect(weddingConfig.venue.name).toBe("Kushwaha Niwash");
+    expect(weddingConfig.venue.nameHi).toBe("कुशवाहा निवास");
+    expect(weddingConfig.venue.mapUrl).toBe("https://maps.app.goo.gl/V7PoRT2YkHU2TPG67");
+    expect(weddingConfig.departure.mapUrl).toBe("https://maps.app.goo.gl/V7PoRT2YkHU2TPG67");
+    expect(weddingConfig.photographs).toEqual({
+      groom: "/images/groom.jpg",
+      bride: "/images/bride.jpg",
+    });
   });
 
   it("keeps the confirmed baraat departure details", () => {

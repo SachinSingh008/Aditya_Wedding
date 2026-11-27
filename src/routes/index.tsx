@@ -75,11 +75,7 @@ function getCountdown(now = Date.now()) {
 
 const GALLERY_CATEGORIES: GalleryCategory[] = [
   "all",
-  "couple",
-  "family",
-  "pre-wedding",
-  "ceremonies",
-  "moments",
+  ...Array.from(new Set(weddingConfig.gallery.map((item) => item.category))),
 ];
 
 function WeddingInvitation() {
@@ -524,7 +520,18 @@ function WeddingInvitation() {
             <p>{copy.coupleDescription}</p>
           </div>
           <div className="couple-grid">
-            <ProfileCard language={language} kind="groom" />
+            <ProfileCard
+              language={language}
+              kind="groom"
+              onPhotoClick={
+                weddingConfig.photographs.groom
+                  ? () => {
+                      const idx = weddingConfig.gallery.findIndex((item) => item.src === weddingConfig.photographs.groom);
+                      if (idx >= 0) setActiveGallery(idx);
+                    }
+                  : undefined
+              }
+            />
             <div className="couple-join-mark" aria-hidden="true">
               <span className="join-stem" />
               <span className="join-medallion">
@@ -533,7 +540,18 @@ function WeddingInvitation() {
               <span>03 · XII · 26</span>
               <span className="join-stem" />
             </div>
-            <ProfileCard language={language} kind="bride" />
+            <ProfileCard
+              language={language}
+              kind="bride"
+              onPhotoClick={
+                weddingConfig.photographs.bride
+                  ? () => {
+                      const idx = weddingConfig.gallery.findIndex((item) => item.src === weddingConfig.photographs.bride);
+                      if (idx >= 0) setActiveGallery(idx);
+                    }
+                  : undefined
+              }
+            />
           </div>
           <FloralDivider />
         </div>
@@ -667,9 +685,22 @@ function WeddingInvitation() {
           <div className="travel-card">
             <MapPin className="travel-pin" aria-hidden="true" />
             <p className="travel-label">{copy.departurePoint}</p>
+            <p className="travel-name">
+              {weddingConfig.departure.nameHi} · {weddingConfig.departure.nameEn}
+            </p>
             <p className="travel-address">{weddingConfig.departure.addressHi}</p>
             <p className="travel-address-en">{weddingConfig.departure.addressEn}</p>
             <span className="travel-time">{copy.departureTime} · 03:00 PM</span>
+            <a
+              href={weddingConfig.departure.mapUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="location-map-link"
+            >
+              <MapPin size={14} aria-hidden="true" />
+              {copy.venueOpenMaps}
+              <ExternalLink size={13} aria-hidden="true" />
+            </a>
           </div>
         </div>
         <div className="barat-copy">
@@ -679,7 +710,6 @@ function WeddingInvitation() {
           {language === "en" ? (
             <p className="barat-translation">{weddingConfig.departure.originalMessageEn}</p>
           ) : null}
-          <p className="barat-method">{copy.baratMethod}</p>
           <FloralDivider />
         </div>
       </section>
@@ -704,10 +734,15 @@ function WeddingInvitation() {
           <h2>{copy.venueTitle}</h2>
           {weddingConfig.venue.name ? (
             <div className="venue-confirmed">
-              <h3>{weddingConfig.venue.name}</h3>
+              <h3>
+                {language === "hi"
+                  ? `${weddingConfig.venue.nameHi} (${weddingConfig.venue.nameEn})`
+                  : `${weddingConfig.venue.nameEn} (${weddingConfig.venue.nameHi})`}
+              </h3>
               {weddingConfig.venue.address ? (
                 <p className="venue-address">
-                  <strong>{copy.venueAddressLabel}:</strong> {weddingConfig.venue.address}
+                  <strong>{copy.venueAddressLabel}:</strong>{" "}
+                  {language === "hi" ? weddingConfig.venue.addressHi : weddingConfig.venue.addressEn}
                 </p>
               ) : null}
               {weddingConfig.venue.mapUrl ? (
@@ -743,40 +778,55 @@ function WeddingInvitation() {
           <h2>{copy.galleryTitle}</h2>
           <p>{copy.galleryDescription}</p>
         </div>
-        <div className="gallery-filters" role="group" aria-label={copy.galleryCategories}>
-          {GALLERY_CATEGORIES.map((category) => (
-            <Button
-              type="button"
-              variant={galleryCategory === category ? "default" : "outline"}
-              size="sm"
-              key={category}
-              onClick={() => setGalleryCategory(category)}
-              aria-pressed={galleryCategory === category}
-            >
-              {copy.galleryFilter[category]}
-            </Button>
-          ))}
-        </div>
+        {GALLERY_CATEGORIES.length > 2 ? (
+          <div className="gallery-filters" role="group" aria-label={copy.galleryCategories}>
+            {GALLERY_CATEGORIES.map((category) => (
+              <Button
+                type="button"
+                variant={galleryCategory === category ? "default" : "outline"}
+                size="sm"
+                key={category}
+                onClick={() => setGalleryCategory(category)}
+                aria-pressed={galleryCategory === category}
+              >
+                {copy.galleryFilter[category]}
+              </Button>
+            ))}
+          </div>
+        ) : null}
         <div className="gallery-grid">
           {filteredGallery.map((item) => {
             const index = weddingConfig.gallery.indexOf(item);
+            const hasPhoto = Boolean(item.src);
+            const title = language === "hi" ? item.titleHi : item.titleEn;
             return (
               <Button
                 variant="ghost"
-                className={`gallery-tile gallery-tile--${item.art}`}
+                className={`gallery-tile gallery-tile--${item.art}${hasPhoto ? " gallery-tile--has-photo" : ""}`}
                 type="button"
                 key={item.key}
                 onClick={() => setActiveGallery(index)}
-                aria-label={`${copy.openImage}: ${language === "hi" ? item.titleHi : item.titleEn}`}
+                aria-label={`${copy.openImage}: ${title}`}
               >
                 <span className="gallery-art">
-                  <MandalaWatermark className="gallery-mandala" />
-                  <Flower2 aria-hidden="true" />
-                  <span>{copy.photoPlaceholder}</span>
+                  {hasPhoto && item.src ? (
+                    <img
+                      src={item.src}
+                      alt={title}
+                      loading="lazy"
+                      className="gallery-photo"
+                    />
+                  ) : (
+                    <>
+                      <MandalaWatermark className="gallery-mandala" />
+                      <Flower2 aria-hidden="true" />
+                      <span>{copy.photoPlaceholder}</span>
+                    </>
+                  )}
                 </span>
                 <span className="gallery-caption">
-                  <span>{language === "hi" ? item.titleHi : item.titleEn}</span>
-                  <span>{copy.photoPending}</span>
+                  <span>{title}</span>
+                  <span>{hasPhoto ? copy.viewPhoto : copy.photoPending}</span>
                 </span>
               </Button>
             );
@@ -790,11 +840,26 @@ function WeddingInvitation() {
             <p className="section-kicker">{copy.contactKicker}</p>
             <h2>{copy.contactTitle}</h2>
             <p className="contact-person">{weddingConfig.groom.father}</p>
+            <p className="contact-place">
+              {language === "hi"
+                ? `${weddingConfig.departure.nameHi} (${weddingConfig.departure.nameEn})`
+                : `${weddingConfig.departure.nameEn} (${weddingConfig.departure.nameHi})`}
+            </p>
             <p className="contact-address">
               {language === "hi"
                 ? weddingConfig.departure.addressHi
                 : weddingConfig.departure.addressEn}
             </p>
+            <a
+              href={weddingConfig.departure.mapUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="location-map-link location-map-link--contact"
+            >
+              <MapPin size={14} aria-hidden="true" />
+              {copy.venueOpenMaps}
+              <ExternalLink size={13} aria-hidden="true" />
+            </a>
           </div>
           <div className="contact-numbers">
             {weddingConfig.contactPhones.map((phone) => (
@@ -938,6 +1003,10 @@ function WeddingInvitation() {
               <div className="intro-lintel-wrap" aria-hidden="true">
                 <span className="intro-lintel-mantra">॥ श्री गणेशाय नमः ॥</span>
               </div>
+
+              <div className="intro-tap-hint-wrap" aria-hidden="true">
+                <span className="intro-tap-hint">✦ {copy.tapDoorsHint} ✦</span>
+              </div>
             </div>
 
             <span className="temple-wing temple-wing--right" aria-hidden="true" />
@@ -1001,13 +1070,27 @@ function WeddingInvitation() {
             className={`viewer-art viewer-art--${activeImage.art}`}
             onClick={(event) => event.stopPropagation()}
           >
-            <MandalaWatermark className="viewer-mandala" />
-            <Flower2 aria-hidden="true" />
-            <span>{copy.photoPlaceholder}</span>
+            {activeImage.src ? (
+              <img
+                src={activeImage.src}
+                alt={language === "hi" ? activeImage.titleHi : activeImage.titleEn}
+                className="viewer-photo"
+              />
+            ) : (
+              <>
+                <MandalaWatermark className="viewer-mandala" />
+                <Flower2 aria-hidden="true" />
+                <span>{copy.photoPlaceholder}</span>
+              </>
+            )}
           </div>
           <div className="viewer-caption" onClick={(event) => event.stopPropagation()}>
             <strong>{language === "hi" ? activeImage.titleHi : activeImage.titleEn}</strong>
-            <span>{copy.photoPending}</span>
+            <span>
+              {activeImage.src
+                ? `${weddingConfig.groom.shortNameEn} & ${weddingConfig.bride.shortNameEn} · 03 · 12 · 2026`
+                : copy.photoPending}
+            </span>
           </div>
           <Button
             type="button"
@@ -1028,7 +1111,15 @@ function WeddingInvitation() {
   );
 }
 
-function ProfileCard({ language, kind }: { language: Language; kind: "groom" | "bride" }) {
+function ProfileCard({
+  language,
+  kind,
+  onPhotoClick,
+}: {
+  language: Language;
+  kind: "groom" | "bride";
+  onPhotoClick?: (() => void) | undefined;
+}) {
   const copy = weddingCopy[language];
   const person = weddingConfig[kind];
   const photoUrl = weddingConfig.photographs[kind];
@@ -1037,12 +1128,28 @@ function ProfileCard({ language, kind }: { language: Language; kind: "groom" | "
     <article className={`profile-card profile-card--${kind}`}>
       <div className={`profile-portrait profile-portrait--${kind}`}>
         {photoUrl ? (
-          <img
-            src={photoUrl}
-            alt={language === "hi" ? person.nameHi : person.nameEn}
-            loading="lazy"
-            className="profile-portrait-photo"
-          />
+          onPhotoClick ? (
+            <button
+              type="button"
+              className="profile-portrait-button"
+              onClick={onPhotoClick}
+              aria-label={`${copy.openImage}: ${language === "hi" ? person.nameHi : person.nameEn}`}
+            >
+              <img
+                src={photoUrl}
+                alt={language === "hi" ? person.nameHi : person.nameEn}
+                loading="lazy"
+                className="profile-portrait-photo"
+              />
+            </button>
+          ) : (
+            <img
+              src={photoUrl}
+              alt={language === "hi" ? person.nameHi : person.nameEn}
+              loading="lazy"
+              className="profile-portrait-photo"
+            />
+          )
         ) : (
           <>
             <MandalaWatermark className="portrait-mandala" />

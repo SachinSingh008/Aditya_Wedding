@@ -3,6 +3,15 @@ export type EventKey = "akhand-ashtayam" | "tilak" | "matkor" | "wedding";
 export type GalleryCategory =
   "all" | "couple" | "family" | "pre-wedding" | "ceremonies" | "moments";
 
+export interface GalleryItem {
+  key: string;
+  category: Exclude<GalleryCategory, "all">;
+  art: string;
+  src?: string | null;
+  titleHi: string;
+  titleEn: string;
+}
+
 export interface WeddingEvent {
   key: EventKey;
   titleHi: string;
@@ -52,8 +61,8 @@ export const weddingConfig = {
    * once real photographs are ready.
    */
   photographs: {
-    groom: null as string | null,
-    bride: null as string | null,
+    groom: "/images/groom.jpg" as string | null,
+    bride: "/images/bride.jpg" as string | null,
   },
   /**
    * Replace with your preferred Ganesh Vandana / devotional shloka audio file in `public/audio/`.
@@ -64,13 +73,20 @@ export const weddingConfig = {
    * The Venue section will automatically switch from "pending" to showing the address and Google Maps navigation.
    */
   venue: {
-    name: null as string | null,
-    address: null as string | null,
-    mapUrl: null as string | null,
+    name: "Kushwaha Niwash" as string | null,
+    nameHi: "कुशवाहा निवास",
+    nameEn: "Kushwaha Niwash",
+    address: "ग्राम + पो० – शिल्हौड़ी, थाना – मढ़ौरा, जिला – सारण, बिहार" as string | null,
+    addressHi: "ग्राम + पो० – शिल्हौड़ी, थाना – मढ़ौरा, जिला – सारण, बिहार",
+    addressEn: "Village & Post — Shilhauri, Police Station — Marhaura, District — Saran, Bihar",
+    mapUrl: "https://maps.app.goo.gl/V7PoRT2YkHU2TPG67" as string | null,
     messageHi: "विवाह स्थल की जानकारी शीघ्र अपडेट की जाएगी।",
     messageEn: "Wedding venue details will be announced soon.",
   },
   departure: {
+    nameHi: "कुशवाहा निवास",
+    nameEn: "Kushwaha Niwash",
+    mapUrl: "https://maps.app.goo.gl/V7PoRT2YkHU2TPG67",
     originalMessage: "बारात मेरे निवास स्थान से निजी वाहन द्वारा दिन में 03 बजे से प्रस्थान करेगी।",
     originalMessageEn:
       "The Baraat procession will depart from our residence by private vehicles at 03:00 PM.",
@@ -143,48 +159,30 @@ export const weddingConfig = {
   ] as readonly WeddingEvent[],
   gallery: [
     {
-      key: "couple-portrait",
-      category: "couple" as const,
+      key: "groom-portrait",
+      category: "couple",
       art: "lotus",
+      src: "/images/groom.jpg",
+      titleHi: "वर — चि. आदित्य कुमार सिंह",
+      titleEn: "The Groom — Aditya Kumar Singh",
+    },
+    {
+      key: "bride-portrait",
+      category: "couple",
+      art: "rose",
+      src: "/images/bride.jpg",
+      titleHi: "वधू — आयु. कुमारी अंजली",
+      titleEn: "The Bride — Kumari Anjali",
+    },
+    {
+      key: "couple-portrait",
+      category: "couple",
+      art: "lotus",
+      src: "/images/couple-portrait.jpg",
       titleHi: "आदित्य एवं अंजली",
       titleEn: "Aditya & Anjali",
     },
-    {
-      key: "family-elders",
-      category: "family" as const,
-      art: "arch",
-      titleHi: "परिवार का आशीर्वाद",
-      titleEn: "Family Blessings",
-    },
-    {
-      key: "pre-wedding-rituals",
-      category: "pre-wedding" as const,
-      art: "jasmine",
-      titleHi: "हल्दी एवं तिलक की स्मृतियाँ",
-      titleEn: "Pre-Wedding Traditions",
-    },
-    {
-      key: "wedding-ceremonies",
-      category: "ceremonies" as const,
-      art: "mandala",
-      titleHi: "मंगल विवाह की रस्में",
-      titleEn: "Wedding Ceremonies",
-    },
-    {
-      key: "special-moments",
-      category: "moments" as const,
-      art: "rose",
-      titleHi: "अनमोल उत्सव के पल",
-      titleEn: "Special Moments",
-    },
-    {
-      key: "family-celebration",
-      category: "family" as const,
-      art: "petal",
-      titleHi: "स्नेहमयी परिवार मिलन",
-      titleEn: "Family Celebration",
-    },
-  ],
+  ] as readonly GalleryItem[],
 } as const;
 
 export const weddingCopy = {
@@ -245,7 +243,6 @@ export const weddingCopy = {
     copied: "लिंक कॉपी हुआ",
     travelKicker: "साथ चलें",
     baratTitle: "बारात प्रस्थान",
-    baratMethod: "निजी वाहनों द्वारा प्रस्थान",
     departurePoint: "प्रस्थान स्थान (वर निवास)",
     departureTime: "प्रस्थान समय",
     venueKicker: "विवाह स्थल",
@@ -267,6 +264,8 @@ export const weddingCopy = {
     },
     photoPlaceholder: "यहाँ स्मृति-चित्र जोड़ा जाएगा",
     photoPending: "तस्वीर शीघ्र उपलब्ध होगी",
+    viewPhoto: "तस्वीर देखें",
+    tapDoorsHint: "निमंत्रण खोलने के लिए द्वार स्पर्श करें",
     openImage: "चित्र खोलें",
     close: "बंद करें",
     previousImage: "पिछला चित्र",
@@ -343,7 +342,6 @@ export const weddingCopy = {
     copied: "Link copied",
     travelKicker: "Join the procession",
     baratTitle: "Baraat Departure",
-    baratMethod: "Departure by private vehicles",
     departurePoint: "Departure Location (Groom's Residence)",
     departureTime: "Departure time",
     venueKicker: "Wedding venue",
@@ -365,6 +363,8 @@ export const weddingCopy = {
     },
     photoPlaceholder: "Photograph will be added here",
     photoPending: "Photograph coming soon",
+    viewPhoto: "View photo",
+    tapDoorsHint: "Tap temple doors to open invitation",
     openImage: "Open photograph",
     close: "Close",
     previousImage: "Previous photograph",
