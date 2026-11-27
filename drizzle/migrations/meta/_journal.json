@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1795769566764,
+      "tag": "0000_wedding_guest_rsvps",
+      "breakpoints": true
+    }
+  ]
+}

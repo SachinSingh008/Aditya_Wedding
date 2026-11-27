@@ -28,3 +28,6 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Application structure
+- Keep the public wedding invitation as the root page and centralize editable wedding details and bilingual copy in `src/data/weddingConfig.ts`, so family updates do not require new admin or login surfaces.
