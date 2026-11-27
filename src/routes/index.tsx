@@ -802,7 +802,7 @@ function WeddingInvitation() {
             return (
               <Button
                 variant="ghost"
-                className={`gallery-tile gallery-tile--${item.art}${hasPhoto ? " gallery-tile--has-photo" : ""}`}
+                className={`gallery-tile gallery-tile--${item.art}${hasPhoto ? " gallery-tile--has-photo" : ""}${item.key === "couple-portrait" ? " gallery-tile--featured" : ""}`}
                 type="button"
                 key={item.key}
                 onClick={() => setActiveGallery(index)}
