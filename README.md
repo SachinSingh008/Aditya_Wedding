@@ -1,24 +1,21 @@
-# Pixel Perfect Replica
+# Aditya & Anjali — Wedding Invitation
 
-Implement exactly the screenshot and nothing else
+Bilingual (Hindi & English) luxury wedding invitation website for **Aditya Kumar Singh** & **Anjali** (03 December 2026, Saran, Bihar).
 
-This project was built with [Lovable](https://lovable.dev).
+## Configuration
 
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/c816bafd-6c55-4f18-9db0-0c2fdd8dd765).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+All editable wedding details, bilingual copy, couple photographs, audio, and venue details are centralized in `src/data/weddingConfig.ts` and `src/data/imageConfig.ts`.
 
 ## Development
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+```sh
+npm install --legacy-peer-deps
+npm run dev
+```
+
+## Build & Test
 
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
+npm test -- --run
+npm run build
 ```
