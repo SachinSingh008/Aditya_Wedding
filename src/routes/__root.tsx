@@ -82,10 +82,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Aditya & Anjali | Wedding Invitation" },
-      { name: "description", content: "A heartfelt invitation to celebrate the wedding of Aditya Kumar Singh and Anjali." },
+      {
+        name: "description",
+        content:
+          "A heartfelt invitation to celebrate the wedding of Aditya Kumar Singh and Anjali.",
+      },
       { name: "author", content: "Aditya & Anjali" },
       { property: "og:title", content: "Aditya & Anjali | Wedding Invitation" },
-      { property: "og:description", content: "Celebrate the wedding of Aditya Kumar Singh and Anjali in Saran, Bihar." },
+      {
+        property: "og:description",
+        content: "Celebrate the wedding of Aditya Kumar Singh and Anjali in Saran, Bihar.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -94,7 +101,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Tiro+Devanagari+Hindi&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Serif+Devanagari:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Tiro+Devanagari+Hindi&display=swap",
       },
       {
         rel: "stylesheet",
@@ -111,7 +118,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="hi">
       <head>
         <HeadContent />
       </head>
